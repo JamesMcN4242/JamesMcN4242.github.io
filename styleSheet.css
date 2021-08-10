@@ -1,0 +1,17 @@
+body {
+    background-color: #373a40;
+}
+
+h1 {
+    color: white;
+}
+
+p {
+    color: white;
+}
+
+.centered {
+    margin: auto;
+    width: 50%;
+    text-align: center;
+}
