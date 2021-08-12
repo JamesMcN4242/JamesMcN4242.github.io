@@ -12,17 +12,17 @@ def createContentJS(filePath, javaScriptPath):
         camelCaseFile = entry.split(".")[0]
         contentName = ''.join(map(lambda x: x if x.islower() else " " + x, camelCaseFile)).title()
 
-        ulEntryName = camelCaseFile + "Ul"
+        ilEntryName = camelCaseFile + "Il"
         entryName = camelCaseFile + "Entry"
         nodeName = camelCaseFile + "Node"
 
-        jsContent = "\n\tconst " + ulEntryName + " = document.createElement(\"ul\");\n"
+        jsContent = "\n\tconst " + ilEntryName + " = document.createElement(\"li\");\n"
         jsContent += "\tconst " + entryName + " = document.createElement(\"a\");\n"
         jsContent += "\tconst " + nodeName + " = document.createTextNode(\"" + contentName + "\");\n"
         jsContent += "\t" + entryName + ".appendChild(" + nodeName + ");\n"
         jsContent += "\t" + entryName + ".href = \"" + pathName + "/" + entry + "\";\n"
-        jsContent += "\t" + ulEntryName + ".appendChild(" + entryName + ");\n"
-        jsContent += "\tlist.appendChild(" + ulEntryName + ");\n"
+        jsContent += "\t" + ilEntryName + ".appendChild(" + entryName + ");\n"
+        jsContent += "\tlist.appendChild(" + ilEntryName + ");\n"
         file.write(jsContent)
 
     file.write("}")
