@@ -16,12 +16,4 @@ function pageLoaded() {
 	dotProductEntry.href = "maths/dotProduct.html";
 	dotProductUl.appendChild(dotProductEntry);
 	list.appendChild(dotProductUl);
-
-	const quadraticFormulaUl = document.createElement("ul");
-	const quadraticFormulaEntry = document.createElement("a");
-	const quadraticFormulaNode = document.createTextNode("Quadratic Formula");
-	quadraticFormulaEntry.appendChild(quadraticFormulaNode);
-	quadraticFormulaEntry.href = "maths/quadraticFormula.html";
-	quadraticFormulaUl.appendChild(quadraticFormulaEntry);
-	list.appendChild(quadraticFormulaUl);
 }
