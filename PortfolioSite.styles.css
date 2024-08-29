@@ -1,12 +1,14 @@
 /* /Layout/MainLayout.razor.rz.scp.css */
 .page[b-1v9xiw62z4] {
-    position: relative;
-    display: flex;
-    flex-direction: column;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  max-height: 100vh;
 }
 
 main[b-1v9xiw62z4] {
-    flex: 1;
+  flex: 1;
+  overflow-y: auto;
 }
 
 .sidebar[b-1v9xiw62z4] {
@@ -46,6 +48,20 @@ main[b-1v9xiw62z4] {
         margin-left: 0;
     }
 }
+
+.bottom-row[b-1v9xiw62z4] {
+  background-color: #f7f7f7;
+  border-top: 1px solid #d6d5d5;
+  height: 2.5rem;
+  max-height: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  position: fixed;
+  bottom: 0;
+  width: 100vw;
+}
+
 
 @media (min-width: 641px) {
     .page[b-1v9xiw62z4] {
