@@ -1,4 +1,5 @@
 @inject NavigationManager Navigation
+@implements IDisposable
 
 <nav class="navbar @(scrolled ? "navbar-scrolled" : "")">
     <div class="nav-container">
@@ -24,6 +25,17 @@
     private bool menuOpen = false;
     private bool scrolled = false;
 
+    protected override void OnInitialized()
+    {
+        Navigation.LocationChanged += OnLocationChanged;
+    }
+
+    private void OnLocationChanged(object? sender, Microsoft.AspNetCore.Components.Routing.LocationChangedEventArgs e)
+    {
+        menuOpen = false;
+        InvokeAsync(StateHasChanged);
+    }
+
     private void ToggleMenu() => menuOpen = !menuOpen;
     private void CloseMenu() => menuOpen = false;
 
@@ -33,5 +45,10 @@
         if (string.IsNullOrEmpty(href))
             return string.IsNullOrEmpty(relativePath) ? "active" : "";
         return relativePath.StartsWith(href, StringComparison.OrdinalIgnoreCase) ? "active" : "";
+    }
+
+    public void Dispose()
+    {
+        Navigation.LocationChanged -= OnLocationChanged;
     }
 }
