@@ -1032,6 +1032,6 @@ C:\repos\portfolio-github-pages\obj\Debug\net8.0\PortfolioSite.dll
 C:\repos\portfolio-github-pages\obj\Debug\net8.0\refint\PortfolioSite.dll
 C:\repos\portfolio-github-pages\obj\Debug\net8.0\PortfolioSite.pdb
 C:\repos\portfolio-github-pages\obj\Debug\net8.0\ref\PortfolioSite.dll
-C:\repos\portfolio-github-pages\obj\Debug\net8.0\compressed\hdowm3ozfd-{0}-er6scsb0wb-er6scsb0wb.gz
-C:\repos\portfolio-github-pages\obj\Debug\net8.0\compressed\jgicf9cldm-{0}-92k8s31z3x-92k8s31z3x.gz
-C:\repos\portfolio-github-pages\obj\Debug\net8.0\compressed\pckk0ynss6-{0}-pgx7kre0nb-pgx7kre0nb.gz
+C:\repos\portfolio-github-pages\obj\Debug\net8.0\compressed\hdowm3ozfd-{0}-23o2v4r3cx-23o2v4r3cx.gz
+C:\repos\portfolio-github-pages\obj\Debug\net8.0\compressed\jgicf9cldm-{0}-lmk3nbksxs-lmk3nbksxs.gz
+C:\repos\portfolio-github-pages\obj\Debug\net8.0\compressed\pckk0ynss6-{0}-n3mv8nuqv9-n3mv8nuqv9.gz

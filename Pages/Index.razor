@@ -1,4 +1,5 @@
 @page "/"
+@inject IJSRuntime JS
 
 <PageTitle>Sourabh Chauhan - Senior Data Engineer</PageTitle>
 
@@ -34,70 +35,9 @@
                         <span class="dot yellow"></span>
                         <span class="dot green"></span>
                     </div>
-                    <span class="terminal-title">sourabhsc-bash</span>
+                    <span class="terminal-title">sourabhsc — bash — 80×24</span>
                 </div>
-                <div class="terminal-body" @ref="terminalRef">
-                    <div class="terminal-line">
-                        <span class="terminal-prompt">sourabhsc&#64;<span class="prompt-path">/home/sourabhsc/</span>&gt;<span class="caret">$</span></span>
-                        <span class="terminal-command @(visibleLines >= 0 ? "typing-cmd" : "")">sourabhsc.ai -h</span>
-                    </div>
-
-                    @if (visibleLines >= 1)
-                    {
-                        <div class="terminal-out-line fade-in">
-                            <span class="prompt-caret">&gt;$</span>
-                            <span class="term-label">Highlights: </span>
-                            <a href="https://sourabhsc.github.io/NULIRG" target="_blank" rel="noopener noreferrer" class="term-link">Image segmentation on HST ULIRGs</a><span class="term-sep">, </span>
-                            <a href="http://dharavicovid.onrender.com/" target="_blank" rel="noopener noreferrer" class="term-link">A JHU covid challenge solution</a>
-                        </div>
-                    }
-
-                    @if (visibleLines >= 2)
-                    {
-                        <div class="terminal-out-line fade-in">
-                            <span class="prompt-caret">&gt;$</span>
-                            <span class="term-label">Direct and indirect conference contributions: </span>
-                            <a href="https://www.kmworld.com/Articles/News/News/Squirro-and-Semantic-Web-Company-collaborate-to-create-a-Composite-AI-solution-156110.aspx" target="_blank" rel="noopener noreferrer" class="term-link">KM World 2022</a><span class="term-sep">, </span>
-                            <a href="https://www.taxonomybootcamp.com/2024/Laura-Rodriguez.aspx" target="_blank" rel="noopener noreferrer" class="term-link">KM World 2024</a><span class="term-sep">, </span>
-                            <a href="https://www.linkedin.com/posts/sourabh-singh-chauhan_etw2025-iaea-nuclearsafety-activity-7290863035924058115-glKw" target="_blank" rel="noopener noreferrer" class="term-link">IAEA conference presentation 2025</a><span class="term-sep">, </span>
-                            <a href="https://www.linkedin.com/posts/helmutnagy_knowledgemanagement-knowledgesummitdublin-activity-7346256954538823681-XeZ3" target="_blank" rel="noopener noreferrer" class="term-link">KM Summit Dublin 2025</a>
-                        </div>
-                    }
-
-                    @if (visibleLines >= 3)
-                    {
-                        <div class="terminal-out-line fade-in">
-                            <span class="prompt-caret">&gt;$</span>
-                            <span class="term-label">Skills: </span>
-                            <span class="term-text">Data Engineering, Knowledge Graph, Machine learning, Computer Vision, ETL, NLP, RAG</span>
-                        </div>
-                    }
-
-                    @if (visibleLines >= 4)
-                    {
-                        <div class="terminal-out-line fade-in">
-                            <span class="prompt-caret">&gt;$</span>
-                            <span class="term-label">Hobbies: </span>
-                            <span class="term-text">Badminton, Gardening, Travel</span>
-                        </div>
-                    }
-
-                    @if (visibleLines >= 5)
-                    {
-                        <div class="terminal-out-line fade-in">
-                            <span class="prompt-caret">&gt;$</span>
-                            <span class="term-label">Alias: </span>
-                            <span class="term-text">sourabhsc</span>
-                        </div>
-                    }
-
-                    @if (visibleLines >= 6)
-                    {
-                        <div class="terminal-out-line fade-in terminal-cursor-line">
-                            <span class="prompt-caret">&gt;$</span>
-                            <span class="blinking-cursor">&#9608;</span>
-                        </div>
-                    }
+                <div class="terminal-body" id="terminal-output">
                 </div>
             </div>
         </div>
@@ -234,27 +174,14 @@
 </section>
 
 @code {
-    private ElementReference terminalRef;
-    private int visibleLines = -1;
-    private System.Threading.Timer? _timer;
+    private bool _started;
 
-    protected override void OnAfterRender(bool firstRender)
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (firstRender)
+        if (firstRender && !_started)
         {
-            // Start typing command immediately, then reveal output lines after delay
-            _timer = new System.Threading.Timer(async _ =>
-            {
-                if (visibleLines < 6)
-                {
-                    visibleLines++;
-                    await InvokeAsync(StateHasChanged);
-                }
-                else
-                {
-                    _timer?.Dispose();
-                }
-            }, null, 2200, 700); // 2.2s initial delay (typing anim), then 700ms per line
+            _started = true;
+            await JS.InvokeVoidAsync("terminalTyping.start", "terminal-output");
         }
     }
 }

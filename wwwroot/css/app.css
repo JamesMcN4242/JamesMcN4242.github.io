@@ -354,157 +354,161 @@ h1, h2, h3 {
     flex-wrap: wrap;
 }
 
-/* --- Terminal Window --- */
+/* --- Terminal Window (macOS style) --- */
 .terminal-window {
-    background: #0d1117;
-    border-radius: var(--radius-lg);
-    border: 1px solid #30363d;
+    background: #000000;
+    border-radius: 10px;
     overflow: hidden;
-    box-shadow: var(--shadow-lg), 0 0 60px rgba(0, 229, 255, 0.05);
+    box-shadow:
+        0 22px 70px 4px rgba(0, 0, 0, 0.56),
+        0 0 0 1px rgba(0, 0, 0, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.05);
 }
 
+/* --- macOS-style title bar --- */
 .terminal-header {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
-    padding: 0.85rem 1.25rem;
-    background: #161b22;
-    border-bottom: 1px solid #30363d;
+    padding: 0 0.75rem;
+    height: 38px;
+    background: linear-gradient(180deg, #3c3c3c 0%, #333333 100%);
+    border-bottom: 1px solid #1a1a1a;
+    position: relative;
 }
 
 .terminal-dots {
     display: flex;
-    gap: 6px;
+    gap: 8px;
+    z-index: 1;
 }
 
 .dot {
     width: 12px;
     height: 12px;
     border-radius: 50%;
+    position: relative;
 }
 
 .dot.red {
-    background: #ff5f56;
+    background: radial-gradient(circle at 35% 35%, #ff6b6b, #ff5f57 60%, #e33e32);
+    box-shadow: inset 0 -1px 1px rgba(0,0,0,0.15);
 }
 
 .dot.yellow {
-    background: #ffbd2e;
+    background: radial-gradient(circle at 35% 35%, #ffd76b, #febc2e 60%, #d9a005);
+    box-shadow: inset 0 -1px 1px rgba(0,0,0,0.15);
 }
 
 .dot.green {
-    background: #27c93f;
+    background: radial-gradient(circle at 35% 35%, #6be06b, #28c840 60%, #1aab29);
+    box-shadow: inset 0 -1px 1px rgba(0,0,0,0.15);
 }
 
 .terminal-title {
-    font-family: var(--font-mono);
+    position: absolute;
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
     font-size: 0.8rem;
-    color: #8b949e;
+    color: #a5a5a5;
     font-weight: 500;
+    pointer-events: none;
+    letter-spacing: 0.01em;
 }
 
+/* --- Terminal body --- */
 .terminal-body {
-    padding: 1.25rem 1.5rem;
-    font-family: var(--font-mono);
-    font-size: 0.82rem;
-    line-height: 1.7;
-    min-height: 320px;
+    padding: 0.85rem 1rem;
+    font-family: 'Menlo', 'JetBrains Mono', 'Monaco', 'Courier New', monospace;
+    font-size: 0.8rem;
+    line-height: 1.6;
+    min-height: 300px;
     overflow-y: auto;
-    max-height: 480px;
+    max-height: 420px;
+    background: #000000;
+    color: #cccccc;
 }
 
 .terminal-line {
     display: flex;
-    gap: 0.5rem;
+    gap: 0.4rem;
     flex-wrap: wrap;
-    margin-bottom: 0.75rem;
+    margin-bottom: 0.6rem;
 }
 
 .terminal-prompt {
-    color: var(--color-green);
+    color: #33ff00;
     white-space: nowrap;
 }
 
 .prompt-path {
-    color: #58a6ff;
+    color: #6cb6ff;
 }
 
 .caret {
-    color: var(--color-accent);
+    color: #33ff00;
     font-weight: 700;
 }
 
 .terminal-command {
-    color: var(--color-text);
+    color: #ffffff;
 }
 
-/* Typing animation for the initial command */
-.typing-cmd {
-    overflow: hidden;
-    white-space: nowrap;
-    border-right: 2px solid var(--color-accent);
-    animation: typing-cmd 1.8s steps(16, end) forwards, blink-caret 0.75s step-end infinite;
-    width: 0;
-    display: inline-block;
-}
-
-@keyframes typing-cmd {
-    0% { width: 0; }
-    100% { width: 16ch; }
-}
-
-@keyframes blink-caret {
-    0%, 100% { border-color: var(--color-accent); }
-    50% { border-color: transparent; }
+/* Inline blinking cursor during typing */
+.typing-cursor {
+    color: #33ff00;
+    animation: blink-block 0.6s step-end infinite;
 }
 
 /* Terminal output lines */
 .terminal-out-line {
-    padding: 0.3rem 0;
-    line-height: 1.7;
+    padding: 0.15rem 0;
+    line-height: 1.55;
     word-wrap: break-word;
 }
 
 .terminal-out-line + .terminal-out-line {
-    margin-top: 0.25rem;
+    margin-top: 0.15rem;
 }
 
 .prompt-caret {
-    color: var(--color-accent);
+    color: #33ff00;
     font-weight: 700;
-    margin-right: 0.5rem;
+    margin-right: 0.35rem;
 }
 
 .term-label {
-    color: #c9d1d9;
+    color: #ffffff;
     font-weight: 600;
 }
 
 .term-text {
-    color: #8b949e;
+    color: #cccccc;
 }
 
 .term-sep {
-    color: #6e7681;
+    color: #888888;
 }
 
 .term-link {
-    color: #58a6ff;
+    color: #6cb6ff;
     text-decoration: underline;
-    text-decoration-color: rgba(88, 166, 255, 0.3);
+    text-decoration-color: rgba(108, 182, 255, 0.5);
     text-underline-offset: 2px;
-    transition: all var(--transition-fast);
+    transition: color 0.15s ease;
 }
 
 .term-link:hover {
-    color: #79c0ff;
-    text-decoration-color: rgba(121, 192, 255, 0.6);
+    color: #93ccff;
+    text-decoration-color: rgba(147, 204, 255, 0.7);
 }
 
 /* Blinking cursor at end */
 .blinking-cursor {
-    color: var(--color-accent);
-    animation: blink-block 1s step-end infinite;
-    font-size: 0.9rem;
+    color: #33ff00;
+    animation: blink-block 0.6s step-end infinite;
+    font-size: 0.85rem;
 }
 
 @keyframes blink-block {
@@ -512,24 +516,8 @@ h1, h2, h3 {
     50% { opacity: 0; }
 }
 
-/* Fade-in for each revealed line */
-.fade-in {
-    animation: fadeSlideIn 0.4s ease-out forwards;
-}
-
-@keyframes fadeSlideIn {
-    0% {
-        opacity: 0;
-        transform: translateY(6px);
-    }
-    100% {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
 .terminal-cursor-line {
-    margin-top: 0.5rem;
+    margin-top: 0.3rem;
 }
 
 .terminal-output {
