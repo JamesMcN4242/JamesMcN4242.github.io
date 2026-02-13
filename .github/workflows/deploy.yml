@@ -23,9 +23,6 @@ jobs:
       - name: Publish
         run: dotnet publish PortfolioSite.csproj -c Release -o release --nologo
 
-      - name: Rewrite base href for GitHub Pages project site
-        run: sed -i 's|<base href="/" />|<base href="/portfolio-github-pages/" />|g' release/wwwroot/index.html
-
       - name: Add .nojekyll to bypass Jekyll processing
         run: touch release/wwwroot/.nojekyll
 
