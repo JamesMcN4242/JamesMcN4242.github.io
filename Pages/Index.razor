@@ -1,0 +1,96 @@
+@page "/"
+@inject ProjectService ProjectService
+
+<PageTitle>James McNeil - Software Engineer</PageTitle>
+
+<section class="hero">
+    <div class="hero-content">
+        <div class="hero-badge">Software Engineer</div>
+        <h1 class="hero-title">
+            Hi, I'm <span class="highlight">James McNeil</span>
+        </h1>
+        <p class="hero-subtitle">
+            A generalist programmer based in Vienna, Austria, with an avid interest in always learning new things.
+            I seek to keep interacting with all areas of development.
+        </p>
+        <div class="hero-actions">
+            <a href="projects" class="btn btn-primary">View Projects</a>
+            <a href="about" class="btn btn-outline">About Me</a>
+        </div>
+        <div class="hero-stats">
+            <div class="stat">
+                <span class="stat-number">@ProjectService.GetAllProjects().Count</span>
+                <span class="stat-label">Projects</span>
+            </div>
+            <div class="stat">
+                <span class="stat-number">@ProjectService.GetCategories().Count</span>
+                <span class="stat-label">Categories</span>
+            </div>
+            <div class="stat">
+                <span class="stat-number">@($"{DateTime.Now.Year - 2017}+")</span>
+                <span class="stat-label">Years Experience</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="featured-section">
+    <div class="section-container">
+        <div class="section-header">
+            <h2>Featured Projects</h2>
+            <p>A selection of work I'm most proud of</p>
+        </div>
+
+        <div class="project-grid">
+            @foreach (var project in ProjectService.GetFeaturedProjects())
+            {
+                <a href="projects/@project.Id" class="project-card featured-card">
+                    <div class="card-category">@project.Category</div>
+                    <h3 class="card-title">@project.Title</h3>
+                    <p class="card-summary">@project.Summary</p>
+                    <div class="card-tech">
+                        @foreach (var tech in project.Technologies.Take(3))
+                        {
+                            <span class="tech-tag">@tech</span>
+                        }
+                    </div>
+                    <div class="card-date">@project.Date.ToString("MMM yyyy")</div>
+                </a>
+            }
+        </div>
+
+        <div class="section-cta">
+            <a href="projects" class="btn btn-outline">View All Projects &rarr;</a>
+        </div>
+    </div>
+</section>
+
+<section class="categories-section">
+    <div class="section-container">
+        <div class="section-header">
+            <h2>Explore by Category</h2>
+            <p>Browse projects by area of focus</p>
+        </div>
+
+        <div class="category-cards">
+            <a href="projects?category=Industry" class="category-card">
+                <div class="category-icon">&#9881;</div>
+                <h3>Industry</h3>
+                <p>Professional work on published titles with large audiences</p>
+                <span class="category-count">@ProjectService.GetProjectsByCategory("Industry").Count projects</span>
+            </a>
+            <a href="projects?category=Personal" class="category-card">
+                <div class="category-icon">&#9733;</div>
+                <h3>Personal</h3>
+                <p>Self-driven projects exploring new technologies and ideas</p>
+                <span class="category-count">@ProjectService.GetProjectsByCategory("Personal").Count projects</span>
+            </a>
+            <a href="projects?category=Game Jam" class="category-card">
+                <div class="category-icon">&#9889;</div>
+                <h3>Game Jam</h3>
+                <p>Fast-paced creations built in tight time constraints</p>
+                <span class="category-count">@ProjectService.GetProjectsByCategory("Game Jam").Count projects</span>
+            </a>
+        </div>
+    </div>
+</section>

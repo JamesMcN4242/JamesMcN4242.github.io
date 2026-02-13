@@ -1,0 +1,37 @@
+@inject NavigationManager Navigation
+
+<nav class="navbar @(scrolled ? "navbar-scrolled" : "")">
+    <div class="nav-container">
+        <a class="nav-brand" href="">
+            James McNeil
+        </a>
+
+        <button class="nav-toggle @(menuOpen ? "active" : "")" @onclick="ToggleMenu" aria-label="Toggle navigation">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+
+        <div class="nav-links @(menuOpen ? "open" : "")">
+            <a href="" class="nav-link @(IsActive(""))" @onclick="CloseMenu">Home</a>
+            <a href="projects" class="nav-link @(IsActive("projects"))" @onclick="CloseMenu">Projects</a>
+            <a href="about" class="nav-link @(IsActive("about"))" @onclick="CloseMenu">About</a>
+        </div>
+    </div>
+</nav>
+
+@code {
+    private bool menuOpen = false;
+    private bool scrolled = false;
+
+    private void ToggleMenu() => menuOpen = !menuOpen;
+    private void CloseMenu() => menuOpen = false;
+
+    private string IsActive(string href)
+    {
+        var relativePath = Navigation.ToBaseRelativePath(Navigation.Uri).Trim('/');
+        if (string.IsNullOrEmpty(href))
+            return string.IsNullOrEmpty(relativePath) ? "active" : "";
+        return relativePath.StartsWith(href, StringComparison.OrdinalIgnoreCase) ? "active" : "";
+    }
+}
