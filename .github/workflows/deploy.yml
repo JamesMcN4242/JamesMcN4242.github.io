@@ -2,7 +2,7 @@ name: Deploy Blazor WASM to GitHub Pages
 
 on:
   push:
-    branches: [ dev/blazorTrials ]
+    branches: [ dev/blazorTrials, dev/sourabhPortfolio ]
   workflow_dispatch:
 
 permissions:

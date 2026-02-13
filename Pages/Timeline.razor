@@ -1,0 +1,62 @@
+@page "/timeline"
+@inject ProjectService ProjectService
+
+<PageTitle>Timeline - Sourabh Chauhan</PageTitle>
+
+<section class="timeline-page">
+    <div class="section-container">
+        <div class="section-header">
+            <h1>Timeline</h1>
+            <p>Career, education, and life milestones</p>
+        </div>
+
+        @foreach (var year in ProjectService.GetTimelineYears())
+        {
+            <div class="timeline-year-group">
+                <h2 class="timeline-year">@year</h2>
+                <div class="timeline-entries">
+                    @foreach (var entry in ProjectService.GetTimeline().Where(t => t.Year == year))
+                    {
+                        <div class="timeline-entry @entry.IconType">
+                            <div class="timeline-icon-wrapper">
+                                <div class="timeline-icon @entry.IconType">
+                                    @switch (entry.IconType)
+                                    {
+                                        case "life":
+                                            <span>&#127968;</span>
+                                            break;
+                                        case "work":
+                                            <span>&#128188;</span>
+                                            break;
+                                        case "edu":
+                                            <span>&#127891;</span>
+                                            break;
+                                    }
+                                </div>
+                                <div class="timeline-line"></div>
+                            </div>
+                            <div class="timeline-content">
+                                <div class="timeline-badge @entry.IconType">
+                                    @switch (entry.IconType)
+                                    {
+                                        case "life":
+                                            <span>[life]</span>
+                                            break;
+                                        case "work":
+                                            <span>[work]</span>
+                                            break;
+                                        case "edu":
+                                            <span>[edu]</span>
+                                            break;
+                                    }
+                                </div>
+                                <h3>@entry.Title</h3>
+                                <p>@entry.Description</p>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+    </div>
+</section>

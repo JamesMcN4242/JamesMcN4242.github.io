@@ -8,18 +8,26 @@
     var project = ProjectService.GetProjectById(ProjectId);
     if (project != null)
     {
-        <PageTitle>@project.Title - James McNeil</PageTitle>
+        <PageTitle>@project.Title - Sourabh Chauhan</PageTitle>
 
         <section class="project-detail">
             <div class="section-container">
                 <a href="projects" class="back-link">&larr; Back to Projects</a>
 
                 <div class="detail-header">
-                    <div class="detail-meta">
-                        <span class="detail-category">@project.Category</span>
-                        <span class="detail-date">@project.Date.ToString("MMMM yyyy")</span>
+                    <div class="detail-image">
+                        <img src="@project.ImageUrl" alt="@project.Title" />
                     </div>
-                    <h1>@project.Title</h1>
+                    <div class="detail-info">
+                        <div class="detail-meta">
+                            <span class="detail-year">@project.Year</span>
+                            @foreach (var tag in project.Tags)
+                            {
+                                <a href="projects?tags=@tag" class="tech-tag clickable">@tag</a>
+                            }
+                        </div>
+                        <h1>@project.Title</h1>
+                    </div>
                 </div>
 
                 <div class="detail-body">
@@ -30,19 +38,9 @@
                         }
                     </div>
 
-                    <aside class="detail-sidebar">
-                        <div class="sidebar-section">
-                            <h3>Technologies</h3>
-                            <div class="tech-list">
-                                @foreach (var tech in project.Technologies)
-                                {
-                                    <span class="tech-tag">@tech</span>
-                                }
-                            </div>
-                        </div>
-
-                        @if (project.Links.Any())
-                        {
+                    @if (project.Links.Any())
+                    {
+                        <aside class="detail-sidebar">
                             <div class="sidebar-section">
                                 <h3>Links</h3>
                                 <div class="link-list">
@@ -54,15 +52,15 @@
                                     }
                                 </div>
                             </div>
-                        }
-                    </aside>
+                        </aside>
+                    }
                 </div>
             </div>
         </section>
     }
     else
     {
-        <PageTitle>Project Not Found - James McNeil</PageTitle>
+        <PageTitle>Project Not Found</PageTitle>
         <div class="not-found">
             <h1>Project Not Found</h1>
             <p>The project you're looking for doesn't exist.</p>
@@ -72,25 +70,25 @@
 }
 else
 {
-    <PageTitle>Projects - James McNeil</PageTitle>
+    <PageTitle>Projects - Sourabh Chauhan</PageTitle>
 
     <section class="projects-page">
         <div class="section-container">
             <div class="section-header">
                 <h1>Projects</h1>
-                <p>A collection of professional, personal, and game jam projects</p>
+                <p>A collection of data engineering, ML, and research projects</p>
             </div>
 
             <div class="filter-bar">
-                <button class="filter-btn @(selectedCategory == null ? "active" : "")"
-                        @onclick="() => SetCategory(null)">
+                <button class="filter-btn @(selectedTag == null ? "active" : "")"
+                        @onclick="() => SetTag(null)">
                     All
                 </button>
-                @foreach (var category in ProjectService.GetCategories())
+                @foreach (var tag in ProjectService.GetAllTags())
                 {
-                    <button class="filter-btn @(selectedCategory == category ? "active" : "")"
-                            @onclick="() => SetCategory(category)">
-                        @category
+                    <button class="filter-btn @(selectedTag == tag ? "active" : "")"
+                            @onclick="() => SetTag(tag)">
+                        @tag
                     </button>
                 }
             </div>
@@ -99,21 +97,22 @@ else
                 @foreach (var project in filteredProjects)
                 {
                     <a href="projects/@project.Id" class="project-card">
-                        <div class="card-category">@project.Category</div>
-                        <h3 class="card-title">@project.Title</h3>
-                        <p class="card-summary">@project.Summary</p>
-                        <div class="card-tech">
-                            @foreach (var tech in project.Technologies.Take(3))
-                            {
-                                <span class="tech-tag">@tech</span>
-                            }
+                        <div class="card-image">
+                            <img src="@project.ImageUrl" alt="@project.Title" loading="lazy" />
                         </div>
-                        <div class="card-footer">
-                            <span class="card-date">@project.Date.ToString("MMM yyyy")</span>
-                            @if (project.IsFeatured)
-                            {
-                                <span class="featured-badge">Featured</span>
-                            }
+                        <div class="card-body">
+                            <div class="card-tags">
+                                @foreach (var tag in project.Tags)
+                                {
+                                    <span class="tech-tag">@tag</span>
+                                }
+                            </div>
+                            <h3 class="card-title">@project.Title</h3>
+                            <p class="card-summary">@project.Summary</p>
+                            <div class="card-footer">
+                                <span class="card-year">@project.Year</span>
+                                <span class="read-more">Read More &rarr;</span>
+                            </div>
                         </div>
                     </a>
                 }
@@ -126,34 +125,34 @@ else
     [Parameter]
     public string? ProjectId { get; set; }
 
-    [SupplyParameterFromQuery(Name = "category")]
-    public string? InitialCategory { get; set; }
+    [SupplyParameterFromQuery(Name = "tags")]
+    public string? InitialTag { get; set; }
 
-    private string? selectedCategory;
+    private string? selectedTag;
     private IReadOnlyList<Project> filteredProjects = Array.Empty<Project>();
 
     protected override void OnParametersSet()
     {
         if (string.IsNullOrEmpty(ProjectId))
         {
-            if (InitialCategory != null && selectedCategory == null)
+            if (InitialTag != null && selectedTag == null)
             {
-                selectedCategory = InitialCategory;
+                selectedTag = InitialTag;
             }
             UpdateFilteredProjects();
         }
     }
 
-    private void SetCategory(string? category)
+    private void SetTag(string? tag)
     {
-        selectedCategory = category;
+        selectedTag = tag;
         UpdateFilteredProjects();
     }
 
     private void UpdateFilteredProjects()
     {
-        filteredProjects = selectedCategory == null
-            ? ProjectService.GetAllProjects().OrderByDescending(p => p.Date).ToList().AsReadOnly()
-            : ProjectService.GetProjectsByCategory(selectedCategory);
+        filteredProjects = selectedTag == null
+            ? ProjectService.GetAllProjects()
+            : ProjectService.GetProjectsByTag(selectedTag);
     }
 }

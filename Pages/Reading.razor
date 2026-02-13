@@ -1,0 +1,63 @@
+@page "/reading"
+@inject ProjectService ProjectService
+
+<PageTitle>Reading - Sourabh Chauhan</PageTitle>
+
+<section class="reading-page">
+    <div class="section-container">
+        <div class="section-header">
+            <h1>Reading</h1>
+            <p>Books I've read, am reading, or want to read</p>
+        </div>
+
+        <div class="reading-section">
+            <h2 class="reading-year">2021</h2>
+            <div class="book-list">
+                @foreach (var book in ProjectService.GetBooks("current"))
+                {
+                    <div class="book-card @(book.IsStarred ? "starred" : "")">
+                        <div class="book-icon">
+                            @if (book.IsStarred)
+                            {
+                                <span class="star">&#9733;</span>
+                            }
+                            else
+                            {
+                                <span class="book-emoji">&#128214;</span>
+                            }
+                        </div>
+                        <div class="book-info">
+                            <h3>@book.Title</h3>
+                            <p>@book.Description</p>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <div class="reading-section">
+            <h2 class="reading-year">Past Favorites</h2>
+            <div class="book-list">
+                @foreach (var book in ProjectService.GetBooks("past-favorites"))
+                {
+                    <div class="book-card @(book.IsStarred ? "starred" : "")">
+                        <div class="book-icon">
+                            @if (book.IsStarred)
+                            {
+                                <span class="star">&#9733;</span>
+                            }
+                            else
+                            {
+                                <span class="book-emoji">&#128214;</span>
+                            }
+                        </div>
+                        <div class="book-info">
+                            <h3>@book.Title</h3>
+                            <p>@book.Description</p>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</section>

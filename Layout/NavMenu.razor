@@ -4,7 +4,7 @@
 <nav class="navbar @(scrolled ? "navbar-scrolled" : "")">
     <div class="nav-container">
         <a class="nav-brand" href="">
-            James McNeil
+            Sourabh Chauhan
         </a>
 
         <button class="nav-toggle @(menuOpen ? "active" : "")" @onclick="ToggleMenu" aria-label="Toggle navigation">
@@ -15,8 +15,10 @@
 
         <div class="nav-links @(menuOpen ? "open" : "")">
             <a href="" class="nav-link @(IsActive(""))" @onclick="CloseMenu">Home</a>
+            <a href="timeline" class="nav-link @(IsActive("timeline"))" @onclick="CloseMenu">Timeline</a>
             <a href="projects" class="nav-link @(IsActive("projects"))" @onclick="CloseMenu">Projects</a>
-            <a href="about" class="nav-link @(IsActive("about"))" @onclick="CloseMenu">About</a>
+            <a href="reading" class="nav-link @(IsActive("reading"))" @onclick="CloseMenu">Reading</a>
+            <a href="http://sourabhsc.wordpress.com/" target="_blank" rel="noopener noreferrer" class="nav-link">Blog</a>
         </div>
     </div>
 </nav>

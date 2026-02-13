@@ -1,95 +1,200 @@
 @page "/"
-@inject ProjectService ProjectService
 
-<PageTitle>James McNeil - Software Engineer</PageTitle>
+<PageTitle>Sourabh Chauhan - Senior Data Engineer</PageTitle>
 
 <section class="hero">
     <div class="hero-content">
-        <div class="hero-badge">Software Engineer</div>
-        <h1 class="hero-title">
-            Hi, I'm <span class="highlight">James McNeil</span>
-        </h1>
-        <p class="hero-subtitle">
-            A generalist programmer based in Vienna, Austria, with an avid interest in always learning new things.
-            I seek to keep interacting with all areas of development.
-        </p>
-        <div class="hero-actions">
-            <a href="projects" class="btn btn-primary">View Projects</a>
-            <a href="about" class="btn btn-outline">About Me</a>
-        </div>
-        <div class="hero-stats">
-            <div class="stat">
-                <span class="stat-number">@ProjectService.GetAllProjects().Count</span>
-                <span class="stat-label">Projects</span>
+        <div class="hero-left">
+            <div class="hero-photo">
+                <img src="https://sourabhsc.onrender.com/static/images/profile_sourabh.png" alt="Sourabh Chauhan" />
             </div>
-            <div class="stat">
-                <span class="stat-number">@ProjectService.GetCategories().Count</span>
-                <span class="stat-label">Categories</span>
-            </div>
-            <div class="stat">
-                <span class="stat-number">@($"{DateTime.Now.Year - 2017}+")</span>
-                <span class="stat-label">Years Experience</span>
-            </div>
-        </div>
-    </div>
-</section>
-
-<section class="featured-section">
-    <div class="section-container">
-        <div class="section-header">
-            <h2>Featured Projects</h2>
-            <p>A selection of work I'm most proud of</p>
-        </div>
-
-        <div class="project-grid">
-            @foreach (var project in ProjectService.GetFeaturedProjects())
-            {
-                <a href="projects/@project.Id" class="project-card featured-card">
-                    <div class="card-category">@project.Category</div>
-                    <h3 class="card-title">@project.Title</h3>
-                    <p class="card-summary">@project.Summary</p>
-                    <div class="card-tech">
-                        @foreach (var tech in project.Technologies.Take(3))
-                        {
-                            <span class="tech-tag">@tech</span>
-                        }
-                    </div>
-                    <div class="card-date">@project.Date.ToString("MMM yyyy")</div>
+            <h1 class="hero-title">Sourabh Chauhan</h1>
+            <p class="hero-role">Senior Data Engineer &amp; Knowledge Graph Specialist</p>
+            <p class="hero-subtitle">
+                Helping organizations unlock data value through AI &amp; Knowledge Graphs.
+            </p>
+            <div class="hero-actions">
+                <a href="https://github.com/sourabhsc" target="_blank" rel="noopener noreferrer" class="btn btn-outline">
+                    <span class="btn-icon">&#9679;</span> GitHub
                 </a>
-            }
+                <a href="https://sourabhsc.wordpress.com/" target="_blank" rel="noopener noreferrer" class="btn btn-outline">
+                    <span class="btn-icon">&#9998;</span> Portfolio
+                </a>
+                <a href="https://www.linkedin.com/in/sourabh-singh-chauhan/" target="_blank" rel="noopener noreferrer" class="btn btn-primary">
+                    <span class="btn-icon">in</span> LinkedIn
+                </a>
+            </div>
         </div>
 
-        <div class="section-cta">
-            <a href="projects" class="btn btn-outline">View All Projects &rarr;</a>
+        <div class="hero-right">
+            <div class="terminal-window">
+                <div class="terminal-header">
+                    <div class="terminal-dots">
+                        <span class="dot red"></span>
+                        <span class="dot yellow"></span>
+                        <span class="dot green"></span>
+                    </div>
+                    <span class="terminal-title">sourabhsc-bash</span>
+                </div>
+                <div class="terminal-body">
+                    <div class="terminal-line">
+                        <span class="terminal-prompt">sourabhsc&#64;<span class="prompt-path">/home/sourabhsc</span>/&gt;$</span>
+                        <span class="terminal-command typing-animation">sourabhsc.ai -h</span>
+                    </div>
+                    <div class="terminal-output">
+                        <p class="terminal-text">usage: sourabhsc.ai [--option]</p>
+                        <p class="terminal-text">&nbsp;</p>
+                        <p class="terminal-text">Welcome! Here are the available sections:</p>
+                        <p class="terminal-text">&nbsp;</p>
+                        <div class="terminal-options">
+                            <a href="#about" class="terminal-option">
+                                <span class="option-flag">--about</span>
+                                <span class="option-desc">Learn more about me</span>
+                            </a>
+                            <a href="#services" class="terminal-option">
+                                <span class="option-flag">--services</span>
+                                <span class="option-desc">What I can help with</span>
+                            </a>
+                            <a href="#expertise" class="terminal-option">
+                                <span class="option-flag">--expertise</span>
+                                <span class="option-desc">Technical skills</span>
+                            </a>
+                            <a href="#contact" class="terminal-option">
+                                <span class="option-flag">--contact</span>
+                                <span class="option-desc">Get in touch</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </section>
 
-<section class="categories-section">
+<section id="about" class="about-section">
     <div class="section-container">
         <div class="section-header">
-            <h2>Explore by Category</h2>
-            <p>Browse projects by area of focus</p>
+            <h2>About Me</h2>
         </div>
+        <div class="about-grid">
+            <div class="about-card">
+                <div class="about-card-icon">&#127891;</div>
+                <h3>Academic Foundation</h3>
+                <p>Master's in Astrophysics from the University of Minnesota, expertise in large-scale datasets and statistics.</p>
+            </div>
+            <div class="about-card">
+                <div class="about-card-icon">&#128640;</div>
+                <h3>Industry Evolution</h3>
+                <p>Successfully transitioned to data engineering, applying scientific rigor to business data problems.</p>
+            </div>
+            <div class="about-card">
+                <div class="about-card-icon">&#128101;</div>
+                <h3>Leadership Experience</h3>
+                <p>Mentored data engineers in best practices for data engineering, knowledge graphs, user management API migration and search optimization.</p>
+            </div>
+            <div class="about-card">
+                <div class="about-card-icon">&#127941;</div>
+                <h3>Personal Interests</h3>
+                <p>Following sports, playing badminton, and balcony gardening.</p>
+            </div>
+        </div>
+        <p class="about-summary">
+            I bring a unique perspective to data engineering, combining the analytical precision of astrophysics research with practical industry experience.
+        </p>
+    </div>
+</section>
 
-        <div class="category-cards">
-            <a href="projects?category=Industry" class="category-card">
-                <div class="category-icon">&#9881;</div>
-                <h3>Industry</h3>
-                <p>Professional work on published titles with large audiences</p>
-                <span class="category-count">@ProjectService.GetProjectsByCategory("Industry").Count projects</span>
+<section id="services" class="services-section">
+    <div class="section-container">
+        <div class="section-header">
+            <h2>Services</h2>
+        </div>
+        <div class="services-grid">
+            <div class="service-card">
+                <div class="service-icon">&#9881;</div>
+                <h3>Data Engineering &amp; Architecture</h3>
+                <p>I design and implement scalable data pipelines that transform raw information into actionable business intelligence, build robust ETL processes, optimize databases, and create insightful knowledge graphs.</p>
+            </div>
+            <div class="service-card">
+                <div class="service-icon">&#129302;</div>
+                <h3>AI Strategy &amp; Implementation</h3>
+                <p>From proof-of-concept to production, I help organizations develop comprehensive AI strategies aligned with business objectives, translating complex technical solutions into clear business value.</p>
+            </div>
+            <div class="service-card">
+                <div class="service-icon">&#128300;</div>
+                <h3>Research &amp; Development</h3>
+                <p>With a strong foundation in scientific research, I bring systematic problem-solving to data challenges, ensuring solutions are both innovative and rigorously validated.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="expertise" class="expertise-section">
+    <div class="section-container">
+        <div class="section-header">
+            <h2>Technical Expertise</h2>
+        </div>
+        <div class="expertise-grid">
+            <div class="expertise-card">
+                <h3>Machine Learning</h3>
+                <div class="expertise-tags">
+                    <span class="tech-tag">NLP</span>
+                    <span class="tech-tag">RAG</span>
+                    <span class="tech-tag">MLOps</span>
+                    <span class="tech-tag">Feature Engineering</span>
+                    <span class="tech-tag">Model Deployment</span>
+                </div>
+            </div>
+            <div class="expertise-card">
+                <h3>Data Engineering &amp; Tools</h3>
+                <div class="expertise-tags">
+                    <span class="tech-tag">ETL Pipelines</span>
+                    <span class="tech-tag">Data Warehousing</span>
+                    <span class="tech-tag">Real-time Processing</span>
+                    <span class="tech-tag">Python</span>
+                    <span class="tech-tag">Docker</span>
+                    <span class="tech-tag">CI/CD</span>
+                    <span class="tech-tag">SQL</span>
+                    <span class="tech-tag">AWS</span>
+                    <span class="tech-tag">Azure</span>
+                </div>
+            </div>
+            <div class="expertise-card">
+                <h3>Knowledge Graphs</h3>
+                <div class="expertise-tags">
+                    <span class="tech-tag">GraphDB</span>
+                    <span class="tech-tag">SPARQL</span>
+                    <span class="tech-tag">PoolParty</span>
+                    <span class="tech-tag">Graph Analytics</span>
+                    <span class="tech-tag">Semantic Data Modeling</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="contact" class="contact-section">
+    <div class="section-container">
+        <div class="section-header">
+            <h2>Let's Get In Touch</h2>
+            <p>Feel free to reach out via LinkedIn or email me at <a href="mailto:chauhans.sourabh@@gmail.com" class="email-link">chauhans.sourabh@@gmail.com</a></p>
+        </div>
+        <div class="social-links">
+            <a href="https://github.com/sourabhsc" target="_blank" rel="noopener noreferrer" class="social-link" title="GitHub">
+                <span class="social-icon github-icon">GH</span>
+                <span>GitHub</span>
             </a>
-            <a href="projects?category=Personal" class="category-card">
-                <div class="category-icon">&#9733;</div>
-                <h3>Personal</h3>
-                <p>Self-driven projects exploring new technologies and ideas</p>
-                <span class="category-count">@ProjectService.GetProjectsByCategory("Personal").Count projects</span>
+            <a href="https://www.linkedin.com/in/sourabh-singh-chauhan/" target="_blank" rel="noopener noreferrer" class="social-link" title="LinkedIn">
+                <span class="social-icon linkedin-icon">in</span>
+                <span>LinkedIn</span>
             </a>
-            <a href="projects?category=Game Jam" class="category-card">
-                <div class="category-icon">&#9889;</div>
-                <h3>Game Jam</h3>
-                <p>Fast-paced creations built in tight time constraints</p>
-                <span class="category-count">@ProjectService.GetProjectsByCategory("Game Jam").Count projects</span>
+            <a href="https://twitter.com/chauhanssourabh" target="_blank" rel="noopener noreferrer" class="social-link" title="Twitter">
+                <span class="social-icon twitter-icon">X</span>
+                <span>Twitter</span>
+            </a>
+            <a href="https://www.instagram.com/sourabhsc/" target="_blank" rel="noopener noreferrer" class="social-link" title="Instagram">
+                <span class="social-icon instagram-icon">IG</span>
+                <span>Instagram</span>
             </a>
         </div>
     </div>
