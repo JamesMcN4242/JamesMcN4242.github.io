@@ -1022,9 +1022,6 @@ C:\repos\portfolio-github-pages\obj\Debug\net8.0\compressed\g24gllq8xl-{0}-tjcz0
 C:\repos\portfolio-github-pages\obj\Debug\net8.0\compressed\1xyugv4ajb-{0}-tptq2av103-tptq2av103.gz
 C:\repos\portfolio-github-pages\obj\Debug\net8.0\compressed\20026094v4-{0}-lfu7j35m59-lfu7j35m59.gz
 C:\repos\portfolio-github-pages\obj\Debug\net8.0\compressed\8onqvammwy-{0}-oyz0vx2fzb-oyz0vx2fzb.gz
-C:\repos\portfolio-github-pages\obj\Debug\net8.0\compressed\hdowm3ozfd-{0}-1ymmvib17a-1ymmvib17a.gz
-C:\repos\portfolio-github-pages\obj\Debug\net8.0\compressed\jgicf9cldm-{0}-528c5c26xg-528c5c26xg.gz
-C:\repos\portfolio-github-pages\obj\Debug\net8.0\compressed\pckk0ynss6-{0}-4wtg46xekm-4wtg46xekm.gz
 C:\repos\portfolio-github-pages\obj\Debug\net8.0\staticwebassets.build.json
 C:\repos\portfolio-github-pages\obj\Debug\net8.0\staticwebassets.build.json.cache
 C:\repos\portfolio-github-pages\obj\Debug\net8.0\staticwebassets.development.json
@@ -1035,3 +1032,6 @@ C:\repos\portfolio-github-pages\obj\Debug\net8.0\PortfolioSite.dll
 C:\repos\portfolio-github-pages\obj\Debug\net8.0\refint\PortfolioSite.dll
 C:\repos\portfolio-github-pages\obj\Debug\net8.0\PortfolioSite.pdb
 C:\repos\portfolio-github-pages\obj\Debug\net8.0\ref\PortfolioSite.dll
+C:\repos\portfolio-github-pages\obj\Debug\net8.0\compressed\hdowm3ozfd-{0}-er6scsb0wb-er6scsb0wb.gz
+C:\repos\portfolio-github-pages\obj\Debug\net8.0\compressed\jgicf9cldm-{0}-92k8s31z3x-92k8s31z3x.gz
+C:\repos\portfolio-github-pages\obj\Debug\net8.0\compressed\pckk0ynss6-{0}-pgx7kre0nb-pgx7kre0nb.gz

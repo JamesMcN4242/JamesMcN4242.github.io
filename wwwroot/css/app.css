@@ -403,17 +403,20 @@ h1, h2, h3 {
 }
 
 .terminal-body {
-    padding: 1.5rem;
+    padding: 1.25rem 1.5rem;
     font-family: var(--font-mono);
-    font-size: 0.85rem;
-    line-height: 1.8;
+    font-size: 0.82rem;
+    line-height: 1.7;
+    min-height: 320px;
+    overflow-y: auto;
+    max-height: 480px;
 }
 
 .terminal-line {
     display: flex;
     gap: 0.5rem;
     flex-wrap: wrap;
-    margin-bottom: 1rem;
+    margin-bottom: 0.75rem;
 }
 
 .terminal-prompt {
@@ -425,23 +428,28 @@ h1, h2, h3 {
     color: #58a6ff;
 }
 
+.caret {
+    color: var(--color-accent);
+    font-weight: 700;
+}
+
 .terminal-command {
     color: var(--color-text);
 }
 
-/* Typing animation */
-.typing-animation {
+/* Typing animation for the initial command */
+.typing-cmd {
     overflow: hidden;
     white-space: nowrap;
     border-right: 2px solid var(--color-accent);
-    animation: typing 2s steps(18, end) forwards, blink-caret 0.75s step-end infinite;
+    animation: typing-cmd 1.8s steps(16, end) forwards, blink-caret 0.75s step-end infinite;
     width: 0;
     display: inline-block;
 }
 
-@keyframes typing {
+@keyframes typing-cmd {
     0% { width: 0; }
-    100% { width: 13ch; }
+    100% { width: 16ch; }
 }
 
 @keyframes blink-caret {
@@ -449,44 +457,83 @@ h1, h2, h3 {
     50% { border-color: transparent; }
 }
 
-.terminal-output {
-    padding-left: 0.25rem;
+/* Terminal output lines */
+.terminal-out-line {
+    padding: 0.3rem 0;
+    line-height: 1.7;
+    word-wrap: break-word;
 }
 
-.terminal-text {
+.terminal-out-line + .terminal-out-line {
+    margin-top: 0.25rem;
+}
+
+.prompt-caret {
+    color: var(--color-accent);
+    font-weight: 700;
+    margin-right: 0.5rem;
+}
+
+.term-label {
+    color: #c9d1d9;
+    font-weight: 600;
+}
+
+.term-text {
     color: #8b949e;
-    font-size: 0.8rem;
-    line-height: 1.6;
 }
 
-.terminal-options {
-    display: flex;
-    flex-direction: column;
-    gap: 0.375rem;
+.term-sep {
+    color: #6e7681;
+}
+
+.term-link {
+    color: #58a6ff;
+    text-decoration: underline;
+    text-decoration-color: rgba(88, 166, 255, 0.3);
+    text-underline-offset: 2px;
+    transition: all var(--transition-fast);
+}
+
+.term-link:hover {
+    color: #79c0ff;
+    text-decoration-color: rgba(121, 192, 255, 0.6);
+}
+
+/* Blinking cursor at end */
+.blinking-cursor {
+    color: var(--color-accent);
+    animation: blink-block 1s step-end infinite;
+    font-size: 0.9rem;
+}
+
+@keyframes blink-block {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+}
+
+/* Fade-in for each revealed line */
+.fade-in {
+    animation: fadeSlideIn 0.4s ease-out forwards;
+}
+
+@keyframes fadeSlideIn {
+    0% {
+        opacity: 0;
+        transform: translateY(6px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.terminal-cursor-line {
     margin-top: 0.5rem;
 }
 
-.terminal-option {
-    display: flex;
-    gap: 1rem;
-    padding: 0.4rem 0.75rem;
-    border-radius: var(--radius-sm);
-    transition: all var(--transition-fast);
-    text-decoration: none;
-}
-
-.terminal-option:hover {
-    background: rgba(0, 229, 255, 0.08);
-}
-
-.option-flag {
-    color: var(--color-accent);
-    font-weight: 600;
-    min-width: 120px;
-}
-
-.option-desc {
-    color: #c9d1d9;
+.terminal-output {
+    padding-left: 0.25rem;
 }
 
 /* =============================================
