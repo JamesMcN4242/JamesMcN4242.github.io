@@ -18,17 +18,9 @@
             <a href="about" class="btn btn-outline">About Me</a>
         </div>
         <div class="hero-stats">
-            <div class="stat">
-                <span class="stat-number">@ProjectService.GetAllProjects().Count</span>
-                <span class="stat-label">Projects</span>
-            </div>
-            <div class="stat">
-                <span class="stat-number">@ProjectService.GetCategories().Count</span>
-                <span class="stat-label">Categories</span>
-            </div>
-            <div class="stat">
-                <span class="stat-number">@($"{DateTime.Now.Year - 2017}+")</span>
-                <span class="stat-label">Years Experience</span>
+            <div class="hero-experience-badge">
+                <span class="experience-number">@(DateTime.Now.Year - 2017)+</span>
+                <span class="experience-label">Years Experience</span>
             </div>
         </div>
     </div>
