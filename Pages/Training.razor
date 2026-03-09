@@ -1,0 +1,79 @@
+@page "/training"
+@inject ClubContentService Content
+
+<PageTitle>Training | URW Badminton Wien</PageTitle>
+
+<section class="page-hero">
+    <div class="section-container narrow-shell">
+        <span class="eyebrow">Training</span>
+        <h1>Vom ersten Schlag bis zur Liga-Routine</h1>
+        <p class="page-lead">Die Vorlage verteilt Trainingsinformationen ueber FAQ, Hallenzeiten und Trainer-Team. Diese modernisierte Seite buendelt sie in einer klaren Einstiegsansicht fuer neue und bestehende Mitglieder.</p>
+    </div>
+</section>
+
+<section class="page-section surface-section">
+    <div class="section-container two-column-layout">
+        <article>
+            <div class="section-header">
+                <span class="eyebrow">Grundsaetze</span>
+                <h2>Wie Training bei URW funktioniert</h2>
+            </div>
+            <ul class="feature-list">
+                @foreach (var principle in Content.GetTrainingPrinciples())
+                {
+                    <li>@principle</li>
+                }
+            </ul>
+        </article>
+
+        <article>
+            <div class="section-header">
+                <span class="eyebrow">Spielstaerken</span>
+                <h2>Selbsteinschaetzung fuer den Einstieg</h2>
+            </div>
+            <div class="stack-cards">
+                @foreach (var level in Content.GetLevelDescriptions())
+                {
+                    <div class="info-card">
+                        <p>@level</p>
+                    </div>
+                }
+            </div>
+        </article>
+    </div>
+</section>
+
+<section class="page-section">
+    <div class="section-container">
+        <div class="section-header">
+            <span class="eyebrow">Trainer-Team</span>
+            <h2>Erfahrene Betreuung vom Nachwuchs bis zur Spitze</h2>
+        </div>
+
+        <div class="card-grid coach-grid">
+            @foreach (var coach in Content.GetCoaches())
+            {
+                <article class="info-card coach-card">
+                    <span class="eyebrow">@coach.Role</span>
+                    <h3>@coach.Name</h3>
+                    <p class="card-subtitle">@coach.Focus</p>
+                    <p>@coach.Summary</p>
+                </article>
+            }
+        </div>
+    </div>
+</section>
+
+<section class="page-section surface-section">
+    <div class="section-container narrow-shell">
+        <div class="section-header">
+            <span class="eyebrow">Organisation</span>
+            <h2>Was neue Mitglieder wissen sollten</h2>
+            <p>Auch ohne festen Partner findet man im Verein passende Spielpartner. Wer sich fuer Training interessiert, schickt idealerweise vorab eine kurze Nachricht mit Spielstaerke und Zielsetzung.</p>
+        </div>
+        <div class="cta-row">
+            <a href="/kontakt" class="btn btn-primary">Training anfragen</a>
+            <a href="/zeiten-sporthallen" class="btn btn-outline">Zu den Hallenzeiten</a>
+        </div>
+    </div>
+</section>

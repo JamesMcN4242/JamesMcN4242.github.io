@@ -1,0 +1,100 @@
+@page "/mitgliedschaft"
+@inject ClubContentService Content
+
+<PageTitle>Mitgliedschaft | URW Badminton Wien</PageTitle>
+
+<section class="page-hero">
+    <div class="section-container narrow-shell">
+        <span class="eyebrow">Mitgliedschaft</span>
+        <h1>Mitspielen, trainieren, Teil des Vereins werden</h1>
+        <p class="page-lead">Die Saison laeuft von 1. September bis 31. August. Neue Mitglieder werden derzeit vorrangig ueber Warteliste aufgenommen, mit Ausnahmen fuer Jugendliche sowie leistungsstarke Erwachsene im Liga-1- oder Liga-2-Bereich.</p>
+    </div>
+</section>
+
+<section class="page-section surface-section">
+    <div class="section-container two-column-layout">
+        <div>
+            <div class="section-header">
+                <span class="eyebrow">Kosten</span>
+                <h2>Beitraege ab Saison 2023/24</h2>
+            </div>
+            <div class="table-shell">
+                <table class="league-table fee-table">
+                    <thead>
+                        <tr>
+                            <th>Modell</th>
+                            <th>Beitrag</th>
+                            <th>Hinweis</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var fee in Content.GetMembershipFees())
+                        {
+                            <tr>
+                                <td>@fee.Label</td>
+                                <td>@fee.Price</td>
+                                <td>@fee.Note</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <aside class="aside-stack">
+            <article class="info-card">
+                <span class="eyebrow">Bankverbindung</span>
+                <h3>Union Rot-Weiss</h3>
+                <p>Bank Austria<br />IBAN: AT14 1200 0522 8008 4101<br />BIC: BKAUATWW</p>
+            </article>
+            <article class="info-card">
+                <span class="eyebrow">Wichtig</span>
+                <p>Unverbindliches Probespielen und Trainingsteilnahme sind nach Absprache und je nach Kapazitaet moeglich.</p>
+            </article>
+        </aside>
+    </div>
+</section>
+
+<section class="page-section">
+    <div class="section-container two-column-layout">
+        <article>
+            <div class="section-header">
+                <span class="eyebrow">Inklusive Leistungen</span>
+                <h2>Was die Mitgliedschaft abdeckt</h2>
+            </div>
+            <ul class="feature-list">
+                @foreach (var benefit in Content.GetMembershipBenefits())
+                {
+                    <li>@benefit</li>
+                }
+            </ul>
+        </article>
+
+        <article>
+            <div class="section-header">
+                <span class="eyebrow">Interesse?</span>
+                <h2>So laeuft der Einstieg ab</h2>
+            </div>
+            <ol class="step-list">
+                @foreach (var step in Content.GetJoinSteps())
+                {
+                    <li>@step</li>
+                }
+            </ol>
+        </article>
+    </div>
+</section>
+
+<section class="page-section surface-section">
+    <div class="section-container narrow-shell">
+        <div class="section-header">
+            <span class="eyebrow">Andere Wege</span>
+            <h2>Badminton in Wien auch ausserhalb des Vereins</h2>
+            <p>Wer vorerst nicht auf die Warteliste moechte, kann Courts in Wiener Centern buchen oder Angebote von USI und Volkshochschulen nutzen.</p>
+        </div>
+        <div class="cta-row">
+            <a href="/links" class="btn btn-outline">Weiter zu den Links</a>
+            <a href="/kontakt" class="btn btn-primary">Mit dem Verein Kontakt aufnehmen</a>
+        </div>
+    </div>
+</section>

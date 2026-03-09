@@ -1,0 +1,93 @@
+@page "/zeiten-sporthallen"
+@inject ClubContentService Content
+
+<PageTitle>Zeiten &amp; Sporthallen | URW Badminton Wien</PageTitle>
+
+<section class="page-hero">
+    <div class="section-container narrow-shell">
+        <span class="eyebrow">Zeiten &amp; Sporthallen</span>
+        <h1>Aktuelle Hallenzeiten fuer Saison und Sommer</h1>
+        <p class="page-lead">Die Hallenzeiten folgen dem Vereinsalltag der Originalseite: freie Spieltermine, Nachwuchsfenster, allgemeines Training, Liga-Betrieb und saisonale Anpassungen bleiben direkt sichtbar.</p>
+    </div>
+</section>
+
+<section class="page-section surface-section">
+    <div class="section-container">
+        <div class="section-header">
+            <span class="eyebrow">September 2025 bis Juni 2026</span>
+            <h2>Regulaerer Wochenplan</h2>
+        </div>
+        <div class="schedule-grid">
+            @foreach (var slot in Content.GetSeasonSchedule())
+            {
+                <article class="schedule-card">
+                    <div class="schedule-topline">
+                        <strong>@slot.Day</strong>
+                        <span>@slot.Time</span>
+                    </div>
+                    <h3>@slot.Venue</h3>
+                    <p>@slot.Focus</p>
+                    <small>@slot.Notes</small>
+                </article>
+            }
+        </div>
+    </div>
+</section>
+
+<section class="page-section">
+    <div class="section-container two-column-layout">
+        <article>
+            <div class="section-header">
+                <span class="eyebrow">Sommerbetrieb</span>
+                <h2>Geplante Hallenzeiten Juli bis September 2026</h2>
+            </div>
+            <div class="schedule-grid compact-grid">
+                @foreach (var slot in Content.GetSummerSchedule())
+                {
+                    <article class="schedule-card">
+                        <div class="schedule-topline">
+                            <strong>@slot.Day</strong>
+                            <span>@slot.Time</span>
+                        </div>
+                        <h3>@slot.Venue</h3>
+                        <p>@slot.Focus</p>
+                        <small>@slot.Notes</small>
+                    </article>
+                }
+            </div>
+        </article>
+
+        <aside class="aside-stack">
+            <article class="info-card">
+                <span class="eyebrow">Hinweise</span>
+                <ul class="feature-list compact-list">
+                    <li>Bei Heimspielen ist freies Spielen nur eingeschraenkt moeglich.</li>
+                    <li>Fuer Schnuppertermine ist eine vorherige Anfrage erforderlich.</li>
+                    <li>Die Halle am Medwedweg ist in den Schulferien geschlossen.</li>
+                    <li>Zusatztermine des WBV laufen ueber eine gesonderte Anmeldung.</li>
+                </ul>
+            </article>
+        </aside>
+    </div>
+</section>
+
+<section class="page-section surface-section">
+    <div class="section-container">
+        <div class="section-header">
+            <span class="eyebrow">Standorte</span>
+            <h2>Wichtige Badminton-Hallen in Wien</h2>
+        </div>
+        <div class="card-grid venue-grid">
+            @foreach (var venue in Content.GetVenues())
+            {
+                <article class="info-card venue-card">
+                    <span class="eyebrow">@venue.District</span>
+                    <h3>@venue.Name</h3>
+                    <p>@venue.Details</p>
+                    <small>@venue.Address</small>
+                    <a href="@venue.Url" target="_blank" rel="noopener noreferrer" class="text-link">Plan oder Details</a>
+                </article>
+            }
+        </div>
+    </div>
+</section>

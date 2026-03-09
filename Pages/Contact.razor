@@ -1,0 +1,48 @@
+@page "/kontakt"
+@inject ClubContentService Content
+
+<PageTitle>Kontakt | URW Badminton Wien</PageTitle>
+
+<section class="page-hero">
+    <div class="section-container narrow-shell">
+        <span class="eyebrow">Kontakt</span>
+        <h1>Der direkte Weg zum Verein</h1>
+        <p class="page-lead">Die Drupal-Vorlage arbeitet mit einem Kontaktformular. In dieser GitHub-Pages-Version sind die gleichen Themen ueber direkte Kontaktkanaele und klare Handlungsaufforderungen abgebildet.</p>
+    </div>
+</section>
+
+<section class="page-section surface-section">
+    <div class="section-container card-grid triple-grid">
+        @foreach (var channel in Content.GetContactChannels())
+        {
+            <article class="info-card contact-card">
+                <span class="eyebrow">@channel.Label</span>
+                <h3>@channel.Value</h3>
+                <p>@channel.Note</p>
+                <a href="@channel.Url" target="_blank" rel="noopener noreferrer" class="text-link">Oeffnen</a>
+            </article>
+        }
+    </div>
+</section>
+
+<section class="page-section">
+    <div class="section-container two-column-layout">
+        <article>
+            <div class="section-header">
+                <span class="eyebrow">Fuer Anfragen</span>
+                <h2>Was in eine gute Nachricht gehoert</h2>
+            </div>
+            <ul class="feature-list">
+                <li>Bei Mitgliedschaftsanfragen bitte Alter, Spielstaerke und bevorzugte Trainingsrichtung nennen.</li>
+                <li>Fuer Turniere oder Ligaeinsaetze am besten gleich den Bezug zu Team, Bewerb oder Rangliste erwaehnen.</li>
+                <li>Bei Trainingsinteresse hilft eine kurze Selbsteinschaetzung nach Anfaenger, leicht fortgeschritten, fortgeschritten oder Spitze.</li>
+            </ul>
+        </article>
+
+        <article class="info-card notice-card">
+            <span class="eyebrow">Modernisierungshinweis</span>
+            <h3>Statische Seite, klare Kontaktwege</h3>
+            <p>Da diese Variante auf GitHub Pages laeuft, ersetzt sie das serverseitige Formular durch direkte E-Mail-, Social- und Mitgliederbereich-Links. Funktional bleibt der Kontaktfluss trotzdem eindeutig.</p>
+        </article>
+    </div>
+</section>

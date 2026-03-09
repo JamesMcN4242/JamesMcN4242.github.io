@@ -1,88 +1,148 @@
 @page "/"
-@inject ProjectService ProjectService
+@inject ClubContentService Content
 
-<PageTitle>James McNeil - Software Engineer</PageTitle>
+<PageTitle>UNION ROT-WEISS Badminton Wien</PageTitle>
 
-<section class="hero">
-    <div class="hero-content">
-        <div class="hero-badge">Software Engineer</div>
-        <h1 class="hero-title">
-            Hi, I'm <span class="highlight">James McNeil</span>
-        </h1>
-        <p class="hero-subtitle">
-            Lead Software Engineer based in Vienna, Austria, with an avid interest in always learning new things.
-            I seek to keep interacting with all areas of development.
-        </p>
-        <div class="hero-actions">
-            <a href="projects" class="btn btn-primary">View Projects</a>
-            <a href="about" class="btn btn-outline">About Me</a>
+<section class="hero hero-home">
+    <div class="section-container hero-grid">
+        <div>
+            <div class="eyebrow">Modernisierte Vereinswebsite in Blazor</div>
+            <h1>UNION ROT-WEISS Badminton Wien</h1>
+            <p class="hero-lead">Der traditionsreiche Wiener Badminton-Verein neu gedacht: mit klarer Navigation, redaktionellen News, Hallenzeiten und Vereinsinformationen in einem zeitgemaessen GitHub-Pages-Auftritt.</p>
+            <div class="hero-actions">
+                <a href="/mitgliedschaft" class="btn btn-primary">Mitglied werden</a>
+                <a href="/news" class="btn btn-outline">Nachrichten ansehen</a>
+            </div>
+            <div class="facts-grid">
+                @foreach (var fact in Content.GetFacts())
+                {
+                    <div class="fact-card">
+                        <strong>@fact.Value</strong>
+                        <span>@fact.Label</span>
+                    </div>
+                }
+            </div>
         </div>
-        <div class="hero-stats">
-            <div class="hero-experience-badge">
-                <span class="experience-number">@(DateTime.Now.Year - 2017)+</span>
-                <span class="experience-label">Years Experience</span>
+
+        <div class="hero-panel">
+            <div class="panel-card panel-card-highlight">
+                <span class="panel-kicker">Aktuelle Vereinslage</span>
+                <h2>News-zentrierte Startseite mit Kontext</h2>
+                <p>Die Originalseite lebt von kurzfristigen Service-Meldungen und Liga-News. Diese Version uebernimmt genau dieses Muster und uebersetzt es in eine mobile, lesbare Kartenstruktur.</p>
+            </div>
+            <div class="panel-stack">
+                <div class="panel-card">
+                    <span class="panel-kicker">Diese Woche</span>
+                    <p>Donnerstag allgemeines Training in der Sportarena, Freitag Liga- und Abendbetrieb in Liesing.</p>
+                </div>
+                <div class="panel-card">
+                    <span class="panel-kicker">Naechster Fokus</span>
+                    <p>Seniorenmeisterschaften, Hallenupdates und die Liga-Rueckrunde bleiben die zentralen redaktionellen Themen.</p>
+                </div>
             </div>
         </div>
     </div>
 </section>
 
-<section class="featured-section">
+<section class="page-section surface-section">
     <div class="section-container">
-        <div class="section-header">
-            <h2>Featured Projects</h2>
-            <p>A selection of work I'm most proud of</p>
+        <div class="section-header split-header">
+            <div>
+                <span class="eyebrow">News</span>
+                <h2>Aktuelle Vereinsmeldungen</h2>
+            </div>
+            <a href="news" class="text-link">Alle Beitraege</a>
         </div>
 
-        <div class="project-grid">
-            @foreach (var project in ProjectService.GetFeaturedProjects())
+        <div class="post-grid">
+            @foreach (var post in Content.GetRecentPosts(5))
             {
-                <a href="projects/@project.Id" class="project-card featured-card">
-                    <div class="card-category">@project.Category</div>
-                    <h3 class="card-title">@project.Title</h3>
-                    <p class="card-summary">@project.Summary</p>
-                    <div class="card-tech">
-                        @foreach (var tech in project.Technologies.Take(3))
-                        {
-                            <span class="tech-tag">@tech</span>
-                        }
+                <a class="post-card" href="/news/@post.Slug">
+                    <span class="post-category">@post.Category</span>
+                    <h3>@post.Title</h3>
+                    <p>@post.Summary</p>
+                    <div class="post-meta">
+                        <span>@post.Author</span>
+                        <span>@post.PublishedOn.ToString("dd.MM.yyyy")</span>
                     </div>
-                    <div class="card-date">@project.Date.ToString("MMM yyyy")</div>
                 </a>
             }
-        </div>
-
-        <div class="section-cta">
-            <a href="projects" class="btn btn-outline">View All Projects &rarr;</a>
         </div>
     </div>
 </section>
 
-<section class="categories-section">
+<section class="page-section">
     <div class="section-container">
-        <div class="section-header">
-            <h2>Explore by Category</h2>
-            <p>Browse projects by area of focus</p>
+        <div class="section-header split-header">
+            <div>
+                <span class="eyebrow">Zeiten</span>
+                <h2>Die Woche im Verein</h2>
+            </div>
+            <a href="/zeiten-sporthallen" class="text-link">Alle Hallenzeiten</a>
         </div>
 
-        <div class="category-cards">
-            <a href="projects?category=Industry" class="category-card">
-                <div class="category-icon">&#9881;</div>
-                <h3>Industry</h3>
-                <p>Professional work on published titles with large audiences</p>
-                <span class="category-count">@ProjectService.GetProjectsByCategory("Industry").Count projects</span>
-            </a>
-            <a href="projects?category=Personal" class="category-card">
-                <div class="category-icon">&#9733;</div>
-                <h3>Personal</h3>
-                <p>Self-driven projects exploring new technologies and ideas</p>
-                <span class="category-count">@ProjectService.GetProjectsByCategory("Personal").Count projects</span>
-            </a>
-            <a href="projects?category=Game Jam" class="category-card">
-                <div class="category-icon">&#9889;</div>
-                <h3>Game Jam</h3>
-                <p>Fast-paced creations built in tight time constraints</p>
-                <span class="category-count">@ProjectService.GetProjectsByCategory("Game Jam").Count projects</span>
-            </a>
+        <div class="schedule-grid compact-grid">
+            @foreach (var slot in Content.GetSeasonSchedule().Take(4))
+            {
+                <article class="schedule-card">
+                    <div class="schedule-topline">
+                        <strong>@slot.Day</strong>
+                        <span>@slot.Time</span>
+                    </div>
+                    <h3>@slot.Venue</h3>
+                    <p>@slot.Focus</p>
+                    <small>@slot.Notes</small>
+                </article>
+            }
         </div>
+    </div>
+</section>
+
+<section class="page-section surface-section">
+    <div class="section-container two-column-layout">
+        <div>
+            <div class="section-header">
+                <span class="eyebrow">Tabelle</span>
+                <h2>MMS 2025/26 im Blick</h2>
+                <p>Die Homepage der Vorlage zeigt den Meisterschaftsstand direkt auf der Startseite. Diese Version uebernimmt das als klar lesbare Tabelle.</p>
+            </div>
+
+            <div class="table-shell">
+                <table class="league-table">
+                    <thead>
+                        <tr>
+                            <th>Team</th>
+                            <th>P</th>
+                            <th>R</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var row in Content.GetLeagueTable("1. Landesliga"))
+                        {
+                            <tr class="@(row.Team.StartsWith("URW", StringComparison.OrdinalIgnoreCase) ? "table-highlight" : string.Empty)">
+                                <td>@row.Team</td>
+                                <td>@row.Points</td>
+                                <td>@row.Rounds</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <aside class="aside-stack">
+            <article class="info-card">
+                <span class="eyebrow">Mitgliedschaft</span>
+                <h3>Ganzjaehrig aktiv</h3>
+                <p>Freie Spieltermine, angeleitete Trainings und Sommerbetrieb gehoeren zum Kern des Vereinsmodells.</p>
+                <a href="/mitgliedschaft" class="text-link">Tarife und Einstieg</a>
+            </article>
+            <article class="info-card">
+                <span class="eyebrow">Kontakt</span>
+                <h3>Schnuppern und Fragen</h3>
+                <p>Fuer eine passende Zuordnung bittet der Verein bei Anfragen immer um Spielstaerke und Basisdaten.</p>
+                <a href="/kontakt" class="text-link">Kontaktwege ansehen</a>
+            </article>
+        </aside>
     </div>
 </section>

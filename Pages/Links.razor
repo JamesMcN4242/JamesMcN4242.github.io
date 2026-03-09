@@ -1,0 +1,36 @@
+@page "/links"
+@inject ClubContentService Content
+
+<PageTitle>Links | URW Badminton Wien</PageTitle>
+
+<section class="page-hero">
+    <div class="section-container narrow-shell">
+        <span class="eyebrow">Links</span>
+        <h1>Vereine, Verbaende und Serviceadressen</h1>
+        <p class="page-lead">Die Originalseite sammelt zahlreiche weiterfuehrende Links. In dieser Version sind sie thematisch gebuendelt, damit relevante Ziele schneller erreichbar sind.</p>
+    </div>
+</section>
+
+<section class="page-section surface-section">
+    <div class="section-container stack-sections">
+        @foreach (var group in Content.GetLinkGroups())
+        {
+            <section>
+                <div class="section-header">
+                    <span class="eyebrow">Ressourcen</span>
+                    <h2>@group.Title</h2>
+                </div>
+                <div class="card-grid link-grid">
+                    @foreach (var item in group.Items)
+                    {
+                        <article class="info-card">
+                            <h3>@item.Label</h3>
+                            <p>@item.Description</p>
+                            <a href="@item.Url" target="_blank" rel="noopener noreferrer" class="text-link">Externe Seite</a>
+                        </article>
+                    }
+                </div>
+            </section>
+        }
+    </div>
+</section>

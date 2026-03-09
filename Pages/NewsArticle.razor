@@ -1,0 +1,74 @@
+@page "/news/{Slug}"
+@inject ClubContentService Content
+
+@if (post is null)
+{
+    <PageTitle>Beitrag nicht gefunden | URW Badminton Wien</PageTitle>
+    <section class="page-section">
+        <div class="section-container narrow-shell not-found">
+            <h1>Beitrag nicht gefunden</h1>
+            <p>Die gewuenschte Meldung ist in dieser Demo nicht vorhanden.</p>
+            <a href="/news" class="btn btn-primary">Zur News-Uebersicht</a>
+        </div>
+    </section>
+}
+else
+{
+    <PageTitle>@post.Title | URW Badminton Wien</PageTitle>
+
+    <section class="page-hero article-hero">
+        <div class="section-container narrow-shell">
+            <a href="/news" class="text-link">Zurueck zu allen News</a>
+            <div class="article-header">
+                <span class="post-category">@post.Category</span>
+                <h1>@post.Title</h1>
+                <p class="page-lead">@post.Summary</p>
+                <div class="post-meta">
+                    <span>@post.Author</span>
+                    <span>@post.PublishedOn.ToString("dd.MM.yyyy")</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="page-section surface-section">
+        <div class="section-container article-layout">
+            <article class="article-body">
+                @foreach (var paragraph in post.Paragraphs)
+                {
+                    <p>@paragraph</p>
+                }
+            </article>
+
+            <aside class="aside-stack">
+                <article class="info-card">
+                    <span class="eyebrow">Tags</span>
+                    <div class="tag-row">
+                        @foreach (var tag in post.Tags)
+                        {
+                            <span class="tag-chip">@tag</span>
+                        }
+                    </div>
+                </article>
+                <article class="info-card">
+                    <span class="eyebrow">Weiterlesen</span>
+                    <a href="/wettkampf" class="text-link">Wettkampfseite</a>
+                    <a href="/zeiten-sporthallen" class="text-link">Hallenzeiten</a>
+                    <a href="/kontakt" class="text-link">Kontakt</a>
+                </article>
+            </aside>
+        </div>
+    </section>
+}
+
+@code {
+    [Parameter]
+    public string Slug { get; set; } = string.Empty;
+
+    private BlogPost? post;
+
+    protected override void OnParametersSet()
+    {
+        post = Content.GetPostBySlug(Slug);
+    }
+}

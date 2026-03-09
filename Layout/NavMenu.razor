@@ -1,10 +1,14 @@
 @inject NavigationManager Navigation
 @implements IDisposable
 
-<nav class="navbar @(scrolled ? "navbar-scrolled" : "")">
+<nav class="navbar">
     <div class="nav-container">
-        <a class="nav-brand" href="">
-            James McNeil
+        <a class="nav-brand" href="/">
+            <span class="brand-mark">URW</span>
+            <span class="brand-text">
+                <strong>Badminton Wien</strong>
+                <small>Der grosse Badminton-Verein in Wien</small>
+            </span>
         </a>
 
         <button class="nav-toggle @(menuOpen ? "active" : "")" @onclick="ToggleMenu" aria-label="Toggle navigation">
@@ -14,16 +18,21 @@
         </button>
 
         <div class="nav-links @(menuOpen ? "open" : "")">
-            <a href="" class="nav-link @(IsActive(""))" @onclick="CloseMenu">Home</a>
-            <a href="projects" class="nav-link @(IsActive("projects"))" @onclick="CloseMenu">Projects</a>
-            <a href="about" class="nav-link @(IsActive("about"))" @onclick="CloseMenu">About</a>
+            <NavLink href="/" Match="NavLinkMatch.All" class="nav-link" ActiveClass="active" @onclick="CloseMenu">Home</NavLink>
+            <NavLink href="/mitgliedschaft" class="nav-link" ActiveClass="active" @onclick="CloseMenu">Mitgliedschaft</NavLink>
+            <NavLink href="/zeiten-sporthallen" class="nav-link" ActiveClass="active" @onclick="CloseMenu">Zeiten &amp; Sporthallen</NavLink>
+            <NavLink href="/training" class="nav-link" ActiveClass="active" @onclick="CloseMenu">Training</NavLink>
+            <NavLink href="/wettkampf" class="nav-link" ActiveClass="active" @onclick="CloseMenu">Wettkampf</NavLink>
+            <NavLink href="/informationen" class="nav-link" ActiveClass="active" @onclick="CloseMenu">Informationen</NavLink>
+            <NavLink href="/links" class="nav-link" ActiveClass="active" @onclick="CloseMenu">Links</NavLink>
+            <NavLink href="/kontakt" class="nav-link" ActiveClass="active" @onclick="CloseMenu">Kontakt</NavLink>
+            <NavLink href="/news" class="nav-link nav-link-accent" ActiveClass="active" @onclick="CloseMenu">News</NavLink>
         </div>
     </div>
 </nav>
 
 @code {
     private bool menuOpen = false;
-    private bool scrolled = false;
 
     protected override void OnInitialized()
     {
@@ -38,14 +47,6 @@
 
     private void ToggleMenu() => menuOpen = !menuOpen;
     private void CloseMenu() => menuOpen = false;
-
-    private string IsActive(string href)
-    {
-        var relativePath = Navigation.ToBaseRelativePath(Navigation.Uri).Trim('/');
-        if (string.IsNullOrEmpty(href))
-            return string.IsNullOrEmpty(relativePath) ? "active" : "";
-        return relativePath.StartsWith(href, StringComparison.OrdinalIgnoreCase) ? "active" : "";
-    }
 
     public void Dispose()
     {

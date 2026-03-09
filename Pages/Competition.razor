@@ -1,0 +1,105 @@
+@page "/wettkampf"
+@inject ClubContentService Content
+
+<PageTitle>Wettkampf | URW Badminton Wien</PageTitle>
+
+<section class="page-hero">
+    <div class="section-container narrow-shell">
+        <span class="eyebrow">Wettkampf</span>
+        <h1>Turniere, Mannschaften und Ranglisten</h1>
+        <p class="page-lead">Der Originalauftritt trennt Wettkampf von Training und Informationen. Diese Version schafft daraus eine belastbare Wettbewerbsseite mit Turnierlogik, Ligakontext und Tabelle.</p>
+    </div>
+</section>
+
+<section class="page-section surface-section">
+    <div class="section-container two-column-layout">
+        <article>
+            <div class="section-header">
+                <span class="eyebrow">Turniere</span>
+                <h2>So funktioniert die Vereinsfreigabe</h2>
+            </div>
+            <ul class="feature-list">
+                @foreach (var note in Content.GetCompetitionNotes())
+                {
+                    <li>@note</li>
+                }
+            </ul>
+        </article>
+
+        <aside class="aside-stack">
+            <article class="info-card">
+                <span class="eyebrow">Direkte Links</span>
+                <p><a class="text-link" href="https://www.badminton.at/zentralausschreibung.php" target="_blank" rel="noopener noreferrer">Aktuelle Ausschreibungen des OeBV</a></p>
+                <p><a class="text-link" href="https://www.wienbadminton.at/" target="_blank" rel="noopener noreferrer">WBV Turnierkalender und Einsteiger-Kategorien</a></p>
+                <p><a class="text-link" href="https://obv.tournamentsoftware.com/ranking/category.aspx?id=39478" target="_blank" rel="noopener noreferrer">Oesterreichische Ranglisten</a></p>
+            </article>
+        </aside>
+    </div>
+</section>
+
+<section class="page-section">
+    <div class="section-container two-column-layout">
+        <article>
+            <div class="section-header">
+                <span class="eyebrow">Rueckrunde</span>
+                <h2>Ausgewaehlte Vereins-Hotspots der Saison</h2>
+            </div>
+            <ol class="step-list">
+                @foreach (var highlight in Content.GetCompetitionHighlights())
+                {
+                    <li>@highlight</li>
+                }
+            </ol>
+        </article>
+
+        <article>
+            <div class="section-header">
+                <span class="eyebrow">Aktuelle Platzierung</span>
+                <h2>1. Landesliga</h2>
+            </div>
+            <div class="table-shell">
+                <table class="league-table">
+                    <thead>
+                        <tr>
+                            <th>Team</th>
+                            <th>P</th>
+                            <th>R</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var row in Content.GetLeagueTable("1. Landesliga"))
+                        {
+                            <tr class="@(row.Team.StartsWith("URW", StringComparison.OrdinalIgnoreCase) ? "table-highlight" : string.Empty)">
+                                <td>@row.Team</td>
+                                <td>@row.Points</td>
+                                <td>@row.Rounds</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </article>
+    </div>
+</section>
+
+<section class="page-section surface-section">
+    <div class="section-container">
+        <div class="section-header split-header">
+            <div>
+                <span class="eyebrow">News zum Wettkampf</span>
+                <h2>Beispiele fuer redaktionelle Liga- und Turnierposts</h2>
+            </div>
+            <a href="/news" class="text-link">Alle Beitraege</a>
+        </div>
+        <div class="post-grid compact-grid">
+            @foreach (var post in Content.GetPosts().Where(post => post.Category is "Liga" or "Turniere").Take(4))
+            {
+                <a class="post-card" href="/news/@post.Slug">
+                    <span class="post-category">@post.Category</span>
+                    <h3>@post.Title</h3>
+                    <p>@post.Summary</p>
+                </a>
+            }
+        </div>
+    </div>
+</section>

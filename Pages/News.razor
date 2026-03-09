@@ -1,0 +1,36 @@
+@page "/news"
+@inject ClubContentService Content
+
+<PageTitle>News | URW Badminton Wien</PageTitle>
+
+<section class="page-hero">
+    <div class="section-container narrow-shell">
+        <span class="eyebrow">News</span>
+        <h1>Mindestens fuenf redaktionelle Vereinsbeitraege</h1>
+        <p class="page-lead">Die Vorlage lebt von News und Servicehinweisen. Diese Liste zeigt, wie ein moderner Blog-Bereich fuer den Verein in Blazor und auf GitHub Pages aussehen kann.</p>
+    </div>
+</section>
+
+<section class="page-section surface-section">
+    <div class="section-container">
+        <div class="post-grid news-grid">
+            @foreach (var post in Content.GetPosts())
+            {
+                <a class="post-card post-card-large" href="/news/@post.Slug">
+                    <div class="post-meta">
+                        <span class="post-category">@post.Category</span>
+                        <span>@post.PublishedOn.ToString("dd.MM.yyyy")</span>
+                    </div>
+                    <h2>@post.Title</h2>
+                    <p>@post.Summary</p>
+                    <div class="tag-row">
+                        @foreach (var tag in post.Tags)
+                        {
+                            <span class="tag-chip">@tag</span>
+                        }
+                    </div>
+                </a>
+            }
+        </div>
+    </div>
+</section>

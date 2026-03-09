@@ -1,0 +1,90 @@
+@page "/informationen"
+@inject ClubContentService Content
+
+<PageTitle>Informationen | URW Badminton Wien</PageTitle>
+
+<section class="page-hero">
+    <div class="section-container narrow-shell">
+        <span class="eyebrow">Informationen</span>
+        <h1>Vereinsdaten, Regeln und Organisation</h1>
+        <p class="page-lead">URW wurde am 20. Jaenner 1969 gegruendet und gehoert zu den traditionsreichsten Badmintonclubs Oesterreichs. Rund 100 Mitglieder im Alter von 6 bis 79 Jahren und 24 Staatsbuergerschaften praegen den Verein.</p>
+    </div>
+</section>
+
+<section class="page-section surface-section">
+    <div class="section-container card-grid triple-grid">
+        <article class="info-card">
+            <span class="eyebrow">Vereinsregister</span>
+            <h3>ZVR 802964403</h3>
+            <p>Das aktuelle Vereinsregisterblatt ist ueber die Abfrage des Innenministeriums verfuegbar.</p>
+            <a href="http://zvr.bmi.gv.at/Start" target="_blank" rel="noopener noreferrer" class="text-link">ZVR Abfrage</a>
+        </article>
+        <article class="info-card">
+            <span class="eyebrow">Postadresse</span>
+            <h3>Steingasse 26/2/28</h3>
+            <p>1030 Wien<br />office@urw-badminton.at</p>
+        </article>
+        <article class="info-card">
+            <span class="eyebrow">Bankverbindung</span>
+            <h3>Bank Austria</h3>
+            <p>IBAN: AT14 1200 0522 8008 4101<br />BIC: BKAUATWW</p>
+        </article>
+    </div>
+</section>
+
+<section class="page-section">
+    <div class="section-container two-column-layout">
+        <article>
+            <div class="section-header">
+                <span class="eyebrow">Dokumente</span>
+                <h2>Wichtige Unterlagen und Regelwerke</h2>
+            </div>
+            <div class="stack-cards">
+                @foreach (var document in Content.GetInformationDocuments())
+                {
+                    <article class="info-card">
+                        <h3>@document.Label</h3>
+                        <p>@document.Description</p>
+                        <a href="@document.Url" target="_blank" rel="noopener noreferrer" class="text-link">Dokument oeffnen</a>
+                    </article>
+                }
+            </div>
+        </article>
+
+        <article>
+            <div class="section-header">
+                <span class="eyebrow">Freies Spielen</span>
+                <h2>Regeln fuer einen fairen Hallenbetrieb</h2>
+            </div>
+            <ul class="feature-list">
+                @foreach (var rule in Content.GetFreePlayRules())
+                {
+                    <li>@rule</li>
+                }
+            </ul>
+            <div class="info-card notice-card">
+                <span class="eyebrow">Awareness</span>
+                <p>Missstaende oder uebergriffiges Verhalten koennen ueber den Vereinskontakt, die SPORTUNION Wien oder SafeSport adressiert werden.</p>
+                <a href="/links" class="text-link">Zu Awareness und Meldestellen</a>
+            </div>
+        </article>
+    </div>
+</section>
+
+<section class="page-section surface-section">
+    <div class="section-container">
+        <div class="section-header">
+            <span class="eyebrow">Vorstand</span>
+            <h2>Funktionsperiode 02/2025 bis 02/2027</h2>
+        </div>
+        <div class="card-grid board-grid">
+            @foreach (var role in Content.GetBoardRoles())
+            {
+                <article class="info-card">
+                    <span class="eyebrow">@role.Role</span>
+                    <h3>@role.Name</h3>
+                </article>
+            }
+        </div>
+    </div>
+</section>
