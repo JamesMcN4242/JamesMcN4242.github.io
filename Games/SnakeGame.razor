@@ -32,22 +32,19 @@ else
     </div>
 
     <div class="snake-field" @ref="snakeFieldRef" tabindex="0" @onkeydown="HandleKeyDown" @onkeydown:preventDefault>
-        @for (int r = 0; r < GridRows; r++)
+        @for (int r = 0; r < GridSize; r++)
         {
             var row = r;
-            @for (int c = 0; c < GridCols; c++)
+            @for (int c = 0; c < GridSize; c++)
             {
                 var col = c;
-                var isHead = snake.Count > 0 && snake[0].Row == row && snake[0].Col == col;
-                var isBody = !isHead && snake.Any(s => s.Row == row && s.Col == col);
-                var isFood = foodRow == row && foodCol == col;
-
-                <div class="snake-cell @(isHead ? "snake-head" : "") @(isBody ? "snake-body" : "") @(isFood ? "snake-food" : "")">
-                    @if (isHead)
+                var cellClass = grid[row, col];
+                <div class="snake-cell @cellClass">
+                    @if (cellClass == "snake-head")
                     {
                         <span>🟢</span>
                     }
-                    else if (isFood)
+                    else if (cellClass == "snake-food")
                     {
                         <span>🍎</span>
                     }
@@ -69,16 +66,14 @@ else
 }
 
 @code {
-    private const int GridRows = 20;
-    private const int GridCols = 20;
-
-    private record Cell(int Row, int Col);
+    private const int GridSize = 20;
 
     private ElementReference snakeFieldRef;
-    private List<Cell> snake = new();
-    private int dirRow = 0;
+    private List<(int Row, int Col)> snake = new();
+    private string[,] grid = new string[GridSize, GridSize];
+    private int dirRow;
     private int dirCol = 1;
-    private int nextDirRow = 0;
+    private int nextDirRow;
     private int nextDirCol = 1;
     private int foodRow;
     private int foodCol;
@@ -96,14 +91,29 @@ else
         }
     }
 
+    private void BuildGrid()
+    {
+        Array.Clear(grid);
+
+        for (int i = snake.Count - 1; i >= 1; i--)
+        {
+            grid[snake[i].Row, snake[i].Col] = "snake-body";
+        }
+
+        if (snake.Count > 0)
+            grid[snake[0].Row, snake[0].Col] = "snake-head";
+
+        grid[foodRow, foodCol] = "snake-food";
+    }
+
     private void StartGame()
     {
         snake.Clear();
-        int startRow = GridRows / 2;
-        int startCol = GridCols / 2;
-        snake.Add(new Cell(startRow, startCol));
-        snake.Add(new Cell(startRow, startCol - 1));
-        snake.Add(new Cell(startRow, startCol - 2));
+        int startRow = GridSize / 2;
+        int startCol = GridSize / 2;
+        snake.Add((startRow, startCol));
+        snake.Add((startRow, startCol - 1));
+        snake.Add((startRow, startCol - 2));
 
         dirRow = 0;
         dirCol = 1;
@@ -114,18 +124,28 @@ else
         gameOver = false;
 
         SpawnFood();
-        gameTimer = new System.Threading.Timer(GameLoop, null, 0, 120);
+        BuildGrid();
+        gameTimer = new System.Threading.Timer(GameLoop, null, 200, 150);
     }
 
     private void SpawnFood()
     {
-        int attempts = 0;
-        do
+        var emptyCells = new List<(int, int)>();
+        for (int r = 0; r < GridSize; r++)
         {
-            foodRow = rng.Next(GridRows);
-            foodCol = rng.Next(GridCols);
-            attempts++;
-        } while (snake.Any(s => s.Row == foodRow && s.Col == foodCol) && attempts < 200);
+            for (int c = 0; c < GridSize; c++)
+            {
+                if (!snake.Any(s => s.Row == r && s.Col == c))
+                    emptyCells.Add((r, c));
+            }
+        }
+
+        if (emptyCells.Count > 0)
+        {
+            var pick = emptyCells[rng.Next(emptyCells.Count)];
+            foodRow = pick.Item1;
+            foodCol = pick.Item2;
+        }
     }
 
     private void GameLoop(object? state)
@@ -140,22 +160,26 @@ else
         int newCol = head.Col + dirCol;
 
         // Wall collision
-        if (newRow < 0 || newRow >= GridRows || newCol < 0 || newCol >= GridCols)
+        if (newRow < 0 || newRow >= GridSize || newCol < 0 || newCol >= GridSize)
         {
             EndGame();
             return;
         }
 
-        // Self collision
-        if (snake.Any(s => s.Row == newRow && s.Col == newCol))
+        // Self collision (skip tail since it will move unless eating)
+        bool eating = newRow == foodRow && newCol == foodCol;
+        for (int i = 0; i < (eating ? snake.Count : snake.Count - 1); i++)
         {
-            EndGame();
-            return;
+            if (snake[i].Row == newRow && snake[i].Col == newCol)
+            {
+                EndGame();
+                return;
+            }
         }
 
-        snake.Insert(0, new Cell(newRow, newCol));
+        snake.Insert(0, (newRow, newCol));
 
-        if (newRow == foodRow && newCol == foodCol)
+        if (eating)
         {
             score += 10;
             SpawnFood();
@@ -165,6 +189,7 @@ else
             snake.RemoveAt(snake.Count - 1);
         }
 
+        BuildGrid();
         InvokeAsync(StateHasChanged);
     }
 

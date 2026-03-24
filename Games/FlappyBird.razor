@@ -28,22 +28,16 @@ else
     </div>
 
     <div class="flappy-field" @ref="flappyFieldRef" tabindex="0" @onkeydown="HandleKeyDown" @onkeydown:preventDefault @onclick="Flap">
-        <!-- Bird -->
-        <div class="flappy-bird" style="top: @(birdY)px;">🐦</div>
-
-        <!-- Pipes -->
-        @foreach (var pipe in pipes)
+        @for (int r = 0; r < Rows; r++)
         {
-            <div class="flappy-pipe pipe-top" style="left: @(pipe.X)px; height: @(pipe.GapTop)px;"></div>
-            <div class="flappy-pipe pipe-bottom" style="left: @(pipe.X)px; top: @(pipe.GapTop + PipeGap)px; height: @(FieldHeight - pipe.GapTop - PipeGap)px;"></div>
-            @if (pipe.Scored)
+            var row = r;
+            @for (int c = 0; c < Cols; c++)
             {
-                <span class="flappy-score-pop" style="left: @(pipe.X + 20)px; top: @(pipe.GapTop + PipeGap / 2)px;">+1</span>
+                var col = c;
+                var cellType = GetCellType(row, col);
+                <div class="flappy-cell @cellType"></div>
             }
         }
-
-        <!-- Ground -->
-        <div class="flappy-ground"></div>
     </div>
 
     <div class="mobile-controls">
@@ -54,25 +48,16 @@ else
 }
 
 @code {
-    private const int FieldWidth = 400;
-    private const int FieldHeight = 500;
-    private const int PipeGap = 130;
-    private const int PipeWidth = 50;
-    private const double Gravity = 0.5;
-    private const double FlapStrength = -7;
-    private const double PipeSpeed = 2.5;
-
-    private record PipeData(double X, int GapTop)
-    {
-        public double X { get; set; } = X;
-        public bool Passed { get; set; }
-        public bool Scored { get; set; }
-        public DateTime ScoredAt { get; set; }
-    }
+    private const int Rows = 20;
+    private const int Cols = 15;
+    private const int BirdCol = 3;
+    private const int GapSize = 5;
 
     private ElementReference flappyFieldRef;
-    private double birdY;
-    private double birdVelocity;
+    private int birdRow;
+    private int gravityCounter;
+    private int flapCounter;
+    private bool isFlapping;
     private List<PipeData> pipes = new();
     private int score;
     private bool gameStarted;
@@ -80,6 +65,13 @@ else
     private System.Threading.Timer? gameTimer;
     private Random rng = new();
     private int frameCount;
+
+    private class PipeData
+    {
+        public int Col { get; set; }
+        public int GapTop { get; set; }
+        public bool Passed { get; set; }
+    }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -89,17 +81,42 @@ else
         }
     }
 
+    private string GetCellType(int row, int col)
+    {
+        if (row == birdRow && col == BirdCol)
+            return "flappy-bird-cell";
+
+        foreach (var pipe in pipes)
+        {
+            if (col == pipe.Col || col == pipe.Col + 1)
+            {
+                bool inGap = row >= pipe.GapTop && row < pipe.GapTop + GapSize;
+                if (!inGap)
+                    return "flappy-pipe-cell";
+                else
+                    return "flappy-gap-cell";
+            }
+        }
+
+        if (row >= Rows - 2)
+            return "flappy-ground-cell";
+
+        return "flappy-sky-cell";
+    }
+
     private void StartGame()
     {
-        birdY = FieldHeight / 2.0 - 15;
-        birdVelocity = 0;
+        birdRow = Rows / 2;
+        gravityCounter = 0;
+        flapCounter = 0;
+        isFlapping = false;
         pipes.Clear();
         score = 0;
         frameCount = 0;
         gameStarted = true;
         gameOver = false;
 
-        gameTimer = new System.Threading.Timer(GameLoop, null, 0, 20);
+        gameTimer = new System.Threading.Timer(GameLoop, null, 0, 100);
     }
 
     private void GameLoop(object? state)
@@ -108,55 +125,64 @@ else
 
         frameCount++;
 
-        // Bird physics
-        birdVelocity += Gravity;
-        birdY += birdVelocity;
-
-        // Spawn pipes
-        if (frameCount % 90 == 0)
+        // Handle flap (move up)
+        if (isFlapping && flapCounter < 3)
         {
-            int gapTop = rng.Next(60, FieldHeight - PipeGap - 80);
-            pipes.Add(new PipeData(FieldWidth, gapTop));
+            flapCounter++;
+            birdRow--;
         }
-
-        // Move pipes and check scoring
-        var now = DateTime.UtcNow;
-        foreach (var pipe in pipes)
+        else
         {
-            pipe.X -= PipeSpeed;
+            isFlapping = false;
+            flapCounter = 0;
 
-            if (!pipe.Passed && pipe.X + PipeWidth < 50)
+            // Gravity: bird falls 1 cell every 3 frames
+            gravityCounter++;
+            if (gravityCounter >= 3)
             {
-                pipe.Passed = true;
-                pipe.Scored = true;
-                pipe.ScoredAt = now;
-                score++;
-            }
-
-            if (pipe.Scored && (now - pipe.ScoredAt).TotalMilliseconds > 500)
-            {
-                pipe.Scored = false;
+                gravityCounter = 0;
+                birdRow++;
             }
         }
 
-        pipes.RemoveAll(p => p.X < -PipeWidth);
+        // Move pipes left every 2 frames
+        if (frameCount % 2 == 0)
+        {
+            foreach (var pipe in pipes)
+            {
+                pipe.Col--;
 
-        // Collision detection
-        if (birdY < 0 || birdY > FieldHeight - 50)
+                if (!pipe.Passed && pipe.Col + 1 < BirdCol)
+                {
+                    pipe.Passed = true;
+                    score++;
+                }
+            }
+
+            pipes.RemoveAll(p => p.Col < -1);
+        }
+
+        // Spawn new pipe every 14 frames
+        if (frameCount % 14 == 0)
+        {
+            int gapTop = rng.Next(2, Rows - GapSize - 3);
+            pipes.Add(new PipeData { Col = Cols - 1, GapTop = gapTop });
+        }
+
+        // Bounds check
+        if (birdRow < 0 || birdRow >= Rows - 1)
         {
             EndGame();
             return;
         }
 
-        const int birdLeft = 40;
-        const int birdRight = 70;
-        const int birdSize = 24;
-
+        // Pipe collision
         foreach (var pipe in pipes)
         {
-            if (birdRight > pipe.X && birdLeft < pipe.X + PipeWidth)
+            if (BirdCol == pipe.Col || BirdCol == pipe.Col + 1)
             {
-                if (birdY < pipe.GapTop || birdY + birdSize > pipe.GapTop + PipeGap)
+                bool inGap = birdRow >= pipe.GapTop && birdRow < pipe.GapTop + GapSize;
+                if (!inGap)
                 {
                     EndGame();
                     return;
@@ -171,7 +197,9 @@ else
     {
         if (!gameOver)
         {
-            birdVelocity = FlapStrength;
+            isFlapping = true;
+            flapCounter = 0;
+            gravityCounter = 0;
         }
     }
 
