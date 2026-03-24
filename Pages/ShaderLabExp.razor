@@ -1,0 +1,375 @@
+@page "/shaderLabExp"
+@implements IDisposable
+
+<PageTitle>ShaderLab - James McNeil</PageTitle>
+
+<section class="experiment-page">
+    <div class="section-container">
+        <div class="section-header">
+            <h1>ShaderLab</h1>
+            <p>Write math expressions to generate visual patterns. Variables: <code>x</code>, <code>y</code> (0-1), <code>t</code> (time)</p>
+        </div>
+
+        <div class="shader-layout">
+            <div class="shader-editor">
+                <div class="shader-presets">
+                    <span class="settings-label">Presets</span>
+                    <div class="preset-btns">
+                        @foreach (var preset in presets)
+                        {
+                            <button class="btn btn-sm btn-secondary" @onclick="() => LoadPreset(preset)">@preset.Name</button>
+                        }
+                    </div>
+                </div>
+
+                <div class="shader-inputs">
+                    <div class="shader-channel">
+                        <label class="channel-label channel-r">R</label>
+                        <input class="shader-input" @bind="exprR" @bind:event="oninput" placeholder="sin(x*10+t)*0.5+0.5" />
+                    </div>
+                    <div class="shader-channel">
+                        <label class="channel-label channel-g">G</label>
+                        <input class="shader-input" @bind="exprG" @bind:event="oninput" placeholder="cos(y*10+t)*0.5+0.5" />
+                    </div>
+                    <div class="shader-channel">
+                        <label class="channel-label channel-b">B</label>
+                        <input class="shader-input" @bind="exprB" @bind:event="oninput" placeholder="sin((x+y)*8+t)*0.5+0.5" />
+                    </div>
+                </div>
+
+                <div class="shader-controls">
+                    <button class="btn btn-primary btn-sm" @onclick="TogglePause">@(paused ? "▶ Play" : "⏸ Pause")</button>
+                    <button class="btn btn-secondary btn-sm" @onclick="ResetTime">Reset</button>
+                    <div class="control-group">
+                        <label>Resolution</label>
+                        <input type="range" min="16" max="64" @bind="resolution" @bind:event="oninput" />
+                        <span>@(resolution)x@(resolution)</span>
+                    </div>
+                    <div class="control-group">
+                        <label>Speed</label>
+                        <input type="range" min="1" max="20" @bind="speed" @bind:event="oninput" />
+                    </div>
+                </div>
+
+                @if (!string.IsNullOrEmpty(errorMsg))
+                {
+                    <div class="shader-error">@errorMsg</div>
+                }
+            </div>
+
+            <div class="shader-canvas">
+                <div class="pixel-grid" style="grid-template-columns: repeat(@resolution, 1fr);">
+                    @for (int i = 0; i < pixels.Length; i++)
+                    {
+                        var px = pixels[i];
+                        <div class="pixel" style="background:rgb(@px.R,@px.G,@px.B);"></div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@code {
+    private struct Pixel
+    {
+        public int R, G, B;
+    }
+
+    private record ShaderPreset(string Name, string R, string G, string B);
+
+    private string exprR = "sin(x*10+t)*0.5+0.5";
+    private string exprG = "cos(y*10+t)*0.5+0.5";
+    private string exprB = "sin((x+y)*8+t)*0.5+0.5";
+    private int resolution = 32;
+    private int speed = 5;
+    private bool paused;
+    private double time;
+    private string? errorMsg;
+    private Pixel[] pixels = Array.Empty<Pixel>();
+    private System.Threading.Timer? timer;
+
+    private readonly ShaderPreset[] presets = new[]
+    {
+        new ShaderPreset("Plasma", "sin(x*10+t)*0.5+0.5", "sin(y*10+t*1.3)*0.5+0.5", "sin((x+y)*6+t*0.7)*0.5+0.5"),
+        new ShaderPreset("Rings", "sin(sqrt((x-0.5)*(x-0.5)+(y-0.5)*(y-0.5))*20-t*3)*0.5+0.5", "sin(sqrt((x-0.5)*(x-0.5)+(y-0.5)*(y-0.5))*20-t*3+2)*0.5+0.5", "sin(sqrt((x-0.5)*(x-0.5)+(y-0.5)*(y-0.5))*20-t*3+4)*0.5+0.5"),
+        new ShaderPreset("Checkers", "floor(x*8+t)%2==floor(y*8)%2?1:0", "floor(x*8+t)%2==floor(y*8)%2?0.5:0", "floor(x*8+t)%2==floor(y*8)%2?1:0.2"),
+        new ShaderPreset("Gradient", "x", "y", "sin(t)*0.5+0.5"),
+        new ShaderPreset("Waves", "sin(x*12+sin(y*4+t)*3)*0.5+0.5", "sin(y*12+sin(x*4+t*1.3)*3)*0.5+0.5", "sin((x*y)*20+t)*0.5+0.5"),
+        new ShaderPreset("Fire", "min(1,(1-y)*2*abs(sin(x*8+t+sin(x*3)*2)))", "min(1,(1-y)*1.2*abs(sin(x*6+t*1.5)))*0.6", "(1-y)*0.1"),
+        new ShaderPreset("Matrix", "0", "abs(sin(y*20+t*3+x*50))*step(0.92,sin(x*30+t))*0.8+0.1", "0"),
+    };
+
+    protected override void OnInitialized()
+    {
+        RenderFrame();
+        timer = new System.Threading.Timer(Tick, null, 0, 50);
+    }
+
+    private void Tick(object? state)
+    {
+        if (!paused)
+        {
+            time += speed * 0.05;
+            RenderFrame();
+            InvokeAsync(StateHasChanged);
+        }
+    }
+
+    private void RenderFrame()
+    {
+        int total = resolution * resolution;
+        if (pixels.Length != total)
+            pixels = new Pixel[total];
+
+        errorMsg = null;
+
+        for (int row = 0; row < resolution; row++)
+        {
+            for (int col = 0; col < resolution; col++)
+            {
+                double x = (double)col / (resolution - 1);
+                double y = (double)row / (resolution - 1);
+                int idx = row * resolution + col;
+
+                try
+                {
+                    double r = EvalExpr(exprR, x, y, time);
+                    double g = EvalExpr(exprG, x, y, time);
+                    double b = EvalExpr(exprB, x, y, time);
+                    pixels[idx] = new Pixel
+                    {
+                        R = Clamp255(r),
+                        G = Clamp255(g),
+                        B = Clamp255(b)
+                    };
+                }
+                catch (Exception ex)
+                {
+                    errorMsg = ex.Message;
+                    pixels[idx] = new Pixel { R = 0, G = 0, B = 0 };
+                }
+            }
+        }
+    }
+
+    private static int Clamp255(double v) => Math.Clamp((int)(v * 255), 0, 255);
+
+    private void LoadPreset(ShaderPreset preset)
+    {
+        exprR = preset.R;
+        exprG = preset.G;
+        exprB = preset.B;
+    }
+
+    private void TogglePause() => paused = !paused;
+    private void ResetTime() => time = 0;
+
+    // Simple math expression evaluator
+    private static double EvalExpr(string expr, double x, double y, double t)
+    {
+        var parser = new ExprParser(expr, x, y, t);
+        double result = parser.ParseExpression();
+        return result;
+    }
+
+    private class ExprParser
+    {
+        private readonly string _expr;
+        private int _pos;
+        private readonly double _x, _y, _t;
+
+        public ExprParser(string expr, double x, double y, double t)
+        {
+            _expr = expr;
+            _pos = 0;
+            _x = x;
+            _y = y;
+            _t = t;
+        }
+
+        public double ParseExpression()
+        {
+            double result = ParseTernary();
+            return result;
+        }
+
+        private double ParseTernary()
+        {
+            double result = ParseAddSub();
+            SkipWhitespace();
+            if (_pos < _expr.Length && _expr[_pos] == '?')
+            {
+                _pos++;
+                double trueVal = ParseAddSub();
+                SkipWhitespace();
+                if (_pos < _expr.Length && _expr[_pos] == ':')
+                    _pos++;
+                double falseVal = ParseAddSub();
+                return result != 0 ? trueVal : falseVal;
+            }
+            return result;
+        }
+
+        private double ParseAddSub()
+        {
+            double result = ParseComparison();
+            while (_pos < _expr.Length)
+            {
+                SkipWhitespace();
+                if (_pos >= _expr.Length) break;
+                char op = _expr[_pos];
+                if (op != '+' && op != '-') break;
+                _pos++;
+                double right = ParseComparison();
+                result = op == '+' ? result + right : result - right;
+            }
+            return result;
+        }
+
+        private double ParseComparison()
+        {
+            double result = ParseMulDiv();
+            SkipWhitespace();
+            if (_pos + 1 < _expr.Length && _expr[_pos] == '=' && _expr[_pos + 1] == '=')
+            {
+                _pos += 2;
+                double right = ParseMulDiv();
+                return Math.Abs(result - right) < 0.001 ? 1 : 0;
+            }
+            return result;
+        }
+
+        private double ParseMulDiv()
+        {
+            double result = ParseUnary();
+            while (_pos < _expr.Length)
+            {
+                SkipWhitespace();
+                if (_pos >= _expr.Length) break;
+                char op = _expr[_pos];
+                if (op == '*') { _pos++; result *= ParseUnary(); }
+                else if (op == '/') { _pos++; double d = ParseUnary(); result = d != 0 ? result / d : 0; }
+                else if (op == '%') { _pos++; double d = ParseUnary(); result = d != 0 ? result % d : 0; }
+                else break;
+            }
+            return result;
+        }
+
+        private double ParseUnary()
+        {
+            SkipWhitespace();
+            if (_pos < _expr.Length && _expr[_pos] == '-')
+            {
+                _pos++;
+                return -ParsePrimary();
+            }
+            return ParsePrimary();
+        }
+
+        private double ParsePrimary()
+        {
+            SkipWhitespace();
+            if (_pos >= _expr.Length) return 0;
+
+            // Parentheses
+            if (_expr[_pos] == '(')
+            {
+                _pos++;
+                double val = ParseExpression();
+                SkipWhitespace();
+                if (_pos < _expr.Length && _expr[_pos] == ')') _pos++;
+                return val;
+            }
+
+            // Number
+            if (char.IsDigit(_expr[_pos]) || _expr[_pos] == '.')
+            {
+                int start = _pos;
+                while (_pos < _expr.Length && (char.IsDigit(_expr[_pos]) || _expr[_pos] == '.'))
+                    _pos++;
+                if (double.TryParse(_expr[start.._pos], System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out double num))
+                    return num;
+                return 0;
+            }
+
+            // Identifier or function
+            if (char.IsLetter(_expr[_pos]))
+            {
+                int start = _pos;
+                while (_pos < _expr.Length && (char.IsLetterOrDigit(_expr[_pos]) || _expr[_pos] == '_'))
+                    _pos++;
+                string name = _expr[start.._pos];
+                SkipWhitespace();
+
+                // Function call
+                if (_pos < _expr.Length && _expr[_pos] == '(')
+                {
+                    _pos++;
+                    double arg1 = ParseExpression();
+                    double arg2 = 0;
+                    SkipWhitespace();
+                    bool hasArg2 = false;
+                    if (_pos < _expr.Length && _expr[_pos] == ',')
+                    {
+                        _pos++;
+                        arg2 = ParseExpression();
+                        hasArg2 = true;
+                    }
+                    SkipWhitespace();
+                    if (_pos < _expr.Length && _expr[_pos] == ')') _pos++;
+
+                    return EvalFunction(name, arg1, arg2, hasArg2);
+                }
+
+                // Variable
+                return name switch
+                {
+                    "x" => _x,
+                    "y" => _y,
+                    "t" => _t,
+                    "PI" or "pi" => Math.PI,
+                    _ => 0
+                };
+            }
+
+            return 0;
+        }
+
+        private static double EvalFunction(string name, double arg1, double arg2, bool hasArg2)
+        {
+            switch (name)
+            {
+                case "sin": return Math.Sin(arg1);
+                case "cos": return Math.Cos(arg1);
+                case "tan": return Math.Tan(arg1);
+                case "abs": return Math.Abs(arg1);
+                case "sqrt": return Math.Sqrt(Math.Max(0, arg1));
+                case "floor": return Math.Floor(arg1);
+                case "ceil": return Math.Ceiling(arg1);
+                case "min": return hasArg2 ? Math.Min(arg1, arg2) : arg1;
+                case "max": return hasArg2 ? Math.Max(arg1, arg2) : arg1;
+                case "pow": return hasArg2 ? Math.Pow(arg1, arg2) : arg1;
+                case "step": return hasArg2 ? (arg2 >= arg1 ? 1 : 0) : (arg1 >= 0.5 ? 1 : 0);
+                case "mod": return hasArg2 && arg2 != 0 ? arg1 % arg2 : 0;
+                case "fract": return arg1 - Math.Floor(arg1);
+                case "clamp": return Math.Clamp(arg1, 0, 1);
+                case "smoothstep":
+                    double v = Math.Clamp(arg1, 0, 1);
+                    return v * v * (3 - 2 * v);
+                default: return 0;
+            }
+        }
+
+        private void SkipWhitespace()
+        {
+            while (_pos < _expr.Length && _expr[_pos] == ' ')
+                _pos++;
+        }
+    }
+
+    public void Dispose()
+    {
+        timer?.Dispose();
+    }
+}

@@ -1,0 +1,211 @@
+@page "/funExperiments"
+@implements IDisposable
+
+<PageTitle>Fun Experiments - James McNeil</PageTitle>
+
+<section class="experiment-page">
+    <div class="section-container">
+        <div class="section-header">
+            <h1>Particle Universe</h1>
+            <p>Click anywhere on the canvas to spawn particles. Watch them dance with gravity and forces.</p>
+        </div>
+
+        <div class="experiment-controls">
+            <div class="control-group">
+                <label>Gravity</label>
+                <input type="range" min="0" max="100" @bind="gravityStrength" @bind:event="oninput" />
+            </div>
+            <div class="control-group">
+                <label>Spawn Count</label>
+                <input type="range" min="1" max="30" @bind="spawnCount" @bind:event="oninput" />
+            </div>
+            <div class="control-group">
+                <label>Trail Length</label>
+                <input type="range" min="0" max="20" @bind="trailLength" @bind:event="oninput" />
+            </div>
+            <div class="experiment-btns">
+                <button class="btn btn-primary btn-sm" @onclick="TogglePause">@(paused ? "Resume" : "Pause")</button>
+                <button class="btn btn-secondary btn-sm" @onclick="ClearParticles">Clear</button>
+                <button class="btn btn-secondary btn-sm" @onclick="SpawnBurst">Burst</button>
+            </div>
+        </div>
+
+        <div class="particle-canvas" @ref="canvasRef" tabindex="0"
+             @onclick="OnCanvasClick"
+             @onmousemove="OnMouseMove">
+            @foreach (var p in particles)
+            {
+                <div class="particle"
+                     style="left:@(p.X.ToString("F1"))%;top:@(p.Y.ToString("F1"))%;background:@p.Color;width:@(p.Size)px;height:@(p.Size)px;opacity:@(p.Life.ToString("F2"));">
+                </div>
+                @if (trailLength > 0)
+                {
+                    @foreach (var t in p.Trail)
+                    {
+                        <div class="particle-trail"
+                             style="left:@(t.X.ToString("F1"))%;top:@(t.Y.ToString("F1"))%;background:@p.Color;opacity:@((t.Alpha * p.Life).ToString("F2"));">
+                        </div>
+                    }
+                }
+            }
+        </div>
+
+        <div class="experiment-stats">
+            <span>Particles: @particles.Count</span>
+            <span>FPS: @fps</span>
+        </div>
+    </div>
+</section>
+
+@code {
+    private class TrailPoint
+    {
+        public double X { get; set; }
+        public double Y { get; set; }
+        public double Alpha { get; set; }
+    }
+
+    private class Particle
+    {
+        public double X { get; set; }
+        public double Y { get; set; }
+        public double VX { get; set; }
+        public double VY { get; set; }
+        public double Life { get; set; } = 1.0;
+        public double Decay { get; set; }
+        public string Color { get; set; } = "";
+        public int Size { get; set; }
+        public List<TrailPoint> Trail { get; set; } = new();
+    }
+
+    private ElementReference canvasRef;
+    private List<Particle> particles = new();
+    private System.Threading.Timer? timer;
+    private Random rng = new();
+    private bool paused;
+    private int gravityStrength = 30;
+    private int spawnCount = 8;
+    private int trailLength = 8;
+    private double mouseX = 50;
+    private double mouseY = 50;
+    private int fps;
+    private int frameCounter;
+    private DateTime lastFpsTime = DateTime.UtcNow;
+
+    private static readonly string[] Colors = {
+        "#6c63ff", "#00d4aa", "#ff6b6b", "#fbbf24", "#60a5fa",
+        "#f472b6", "#a78bfa", "#34d399", "#fb923c", "#38bdf8"
+    };
+
+    protected override void OnInitialized()
+    {
+        timer = new System.Threading.Timer(Update, null, 0, 16);
+    }
+
+    private void Update(object? state)
+    {
+        if (paused) return;
+
+        frameCounter++;
+        var now = DateTime.UtcNow;
+        if ((now - lastFpsTime).TotalSeconds >= 1)
+        {
+            fps = frameCounter;
+            frameCounter = 0;
+            lastFpsTime = now;
+        }
+
+        double gravity = gravityStrength / 1000.0;
+
+        for (int i = particles.Count - 1; i >= 0; i--)
+        {
+            var p = particles[i];
+
+            if (trailLength > 0)
+            {
+                p.Trail.Insert(0, new TrailPoint { X = p.X, Y = p.Y, Alpha = 0.4 });
+                while (p.Trail.Count > trailLength)
+                    p.Trail.RemoveAt(p.Trail.Count - 1);
+
+                for (int t = 0; t < p.Trail.Count; t++)
+                    p.Trail[t].Alpha = 0.4 * (1.0 - (double)t / p.Trail.Count);
+            }
+
+            p.VY += gravity;
+            p.X += p.VX;
+            p.Y += p.VY;
+            p.Life -= p.Decay;
+
+            // Bounce off walls
+            if (p.X < 0) { p.X = 0; p.VX = Math.Abs(p.VX) * 0.7; }
+            if (p.X > 100) { p.X = 100; p.VX = -Math.Abs(p.VX) * 0.7; }
+            if (p.Y < 0) { p.Y = 0; p.VY = Math.Abs(p.VY) * 0.7; }
+            if (p.Y > 100) { p.Y = 100; p.VY = -Math.Abs(p.VY) * 0.7; }
+
+            if (p.Life <= 0)
+                particles.RemoveAt(i);
+        }
+
+        // Cap particle count
+        while (particles.Count > 500)
+            particles.RemoveAt(0);
+
+        InvokeAsync(StateHasChanged);
+    }
+
+    private void SpawnAt(double xPct, double yPct, int count)
+    {
+        for (int i = 0; i < count; i++)
+        {
+            double angle = rng.NextDouble() * Math.PI * 2;
+            double speed = 0.2 + rng.NextDouble() * 0.8;
+            particles.Add(new Particle
+            {
+                X = xPct,
+                Y = yPct,
+                VX = Math.Cos(angle) * speed,
+                VY = Math.Sin(angle) * speed,
+                Life = 1.0,
+                Decay = 0.002 + rng.NextDouble() * 0.005,
+                Color = Colors[rng.Next(Colors.Length)],
+                Size = 4 + rng.Next(8)
+            });
+        }
+    }
+
+    private void OnCanvasClick(MouseEventArgs e)
+    {
+        // (e.OffsetX / target width) is not directly available, so approximate using clientX
+        // Since the canvas is the only large element, we use percentage-based positioning
+        double xPct = (e.OffsetX / 800.0) * 100;
+        double yPct = (e.OffsetY / 500.0) * 100;
+        xPct = Math.Clamp(xPct, 0, 100);
+        yPct = Math.Clamp(yPct, 0, 100);
+        SpawnAt(xPct, yPct, spawnCount);
+    }
+
+    private void OnMouseMove(MouseEventArgs e)
+    {
+        mouseX = (e.OffsetX / 800.0) * 100;
+        mouseY = (e.OffsetY / 500.0) * 100;
+    }
+
+    private void TogglePause() => paused = !paused;
+
+    private void ClearParticles() => particles.Clear();
+
+    private void SpawnBurst()
+    {
+        for (int i = 0; i < 5; i++)
+        {
+            double x = 10 + rng.NextDouble() * 80;
+            double y = 10 + rng.NextDouble() * 80;
+            SpawnAt(x, y, spawnCount);
+        }
+    }
+
+    public void Dispose()
+    {
+        timer?.Dispose();
+    }
+}
