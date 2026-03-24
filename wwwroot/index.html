@@ -71,43 +71,6 @@
             var r = el.getBoundingClientRect();
             return [r.left, r.top, r.width, r.height];
         };
-
-        window.particleInterop = {
-            init: function (dotNetRef) {
-                var canvas = document.querySelector('.particle-canvas');
-                if (!canvas) return;
-
-                function getPercent(clientX, clientY) {
-                    var r = canvas.getBoundingClientRect();
-                    var xPct = ((clientX - r.left) / r.width) * 100;
-                    var yPct = ((clientY - r.top) / r.height) * 100;
-                    xPct = Math.max(0, Math.min(100, xPct));
-                    yPct = Math.max(0, Math.min(100, yPct));
-                    return [xPct, yPct];
-                }
-
-                canvas.addEventListener('click', function (e) {
-                    var pos = getPercent(e.clientX, e.clientY);
-                    dotNetRef.invokeMethodAsync('JsSpawn', pos[0], pos[1], false);
-                });
-
-                canvas.addEventListener('touchstart', function (e) {
-                    e.preventDefault();
-                    if (e.touches.length > 0) {
-                        var pos = getPercent(e.touches[0].clientX, e.touches[0].clientY);
-                        dotNetRef.invokeMethodAsync('JsSpawn', pos[0], pos[1], false);
-                    }
-                }, { passive: false });
-
-                canvas.addEventListener('touchmove', function (e) {
-                    e.preventDefault();
-                    if (e.touches.length > 0) {
-                        var pos = getPercent(e.touches[0].clientX, e.touches[0].clientY);
-                        dotNetRef.invokeMethodAsync('JsSpawn', pos[0], pos[1], true);
-                    }
-                }, { passive: false });
-            }
-        };
     </script>
 </body>
 

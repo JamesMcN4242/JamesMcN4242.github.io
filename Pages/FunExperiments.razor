@@ -1,62 +1,80 @@
-@page "/funExperiments"
+@page "/particle-universe"
 @implements IDisposable
-@inject IJSRuntime JS
 
-<PageTitle>Fun Experiments - James McNeil</PageTitle>
+@if (!Embedded)
+{
+    <PageTitle>Particle Universe - James McNeil</PageTitle>
+}
 
-<section class="experiment-page">
-    <div class="section-container">
-        <div class="section-header">
-            <h1>Particle Universe</h1>
-            <p>Click anywhere on the canvas to spawn particles. Watch them dance with gravity and forces.</p>
-        </div>
+<section class="experiment-page @(Embedded ? "embedded" : "")">
+    <div class="@(Embedded ? "" : "section-container")">
+        @if (!Embedded)
+        {
+            <div class="section-header">
+                <h1>Particle Universe</h1>
+                <p>Click anywhere on the canvas to spawn particles. Watch them dance with gravity and forces.</p>
+            </div>
+        }
 
-        <div class="experiment-controls">
-            <div class="control-group">
-                <label>Gravity</label>
-                <input type="range" min="0" max="100" @bind="gravityStrength" @bind:event="oninput" />
-            </div>
-            <div class="control-group">
-                <label>Spawn Count</label>
-                <input type="range" min="1" max="30" @bind="spawnCount" @bind:event="oninput" />
-            </div>
-            <div class="control-group">
-                <label>Trail Length</label>
-                <input type="range" min="0" max="20" @bind="trailLength" @bind:event="oninput" />
-            </div>
-            <div class="experiment-btns">
-                <button class="btn btn-primary btn-sm" @onclick="TogglePause">@(paused ? "Resume" : "Pause")</button>
-                <button class="btn btn-secondary btn-sm" @onclick="ClearParticles">Clear</button>
-                <button class="btn btn-secondary btn-sm" @onclick="SpawnBurst">Burst</button>
-            </div>
-        </div>
-
-        <div class="particle-canvas" @ref="canvasRef" tabindex="0">
-            @foreach (var p in particles)
-            {
-                <div class="particle"
-                     style="left:@(p.X.ToString("F1"))%;top:@(p.Y.ToString("F1"))%;background:@p.Color;width:@(p.Size)px;height:@(p.Size)px;opacity:@(p.Life.ToString("F2"));">
+        <div class="particle-desktop-only">
+            <div class="experiment-controls">
+                <div class="control-group">
+                    <label>Gravity</label>
+                    <input type="range" min="0" max="100" @bind="gravityStrength" @bind:event="oninput" />
                 </div>
-                @if (trailLength > 0)
+                <div class="control-group">
+                    <label>Spawn Count</label>
+                    <input type="range" min="1" max="30" @bind="spawnCount" @bind:event="oninput" />
+                </div>
+                <div class="control-group">
+                    <label>Trail Length</label>
+                    <input type="range" min="0" max="20" @bind="trailLength" @bind:event="oninput" />
+                </div>
+                <div class="experiment-btns">
+                    <button class="btn btn-primary btn-sm" @onclick="TogglePause">@(paused ? "Resume" : "Pause")</button>
+                    <button class="btn btn-secondary btn-sm" @onclick="ClearParticles">Clear</button>
+                    <button class="btn btn-secondary btn-sm" @onclick="SpawnBurst">Burst</button>
+                </div>
+            </div>
+
+            <div class="particle-canvas" @ref="canvasRef" tabindex="0"
+                 @onclick="OnCanvasClick">
+                @foreach (var p in particles)
                 {
-                    @foreach (var t in p.Trail)
+                    <div class="particle"
+                         style="left:@(p.X.ToString("F1"))%;top:@(p.Y.ToString("F1"))%;background:@p.Color;width:@(p.Size)px;height:@(p.Size)px;opacity:@(p.Life.ToString("F2"));">
+                    </div>
+                    @if (trailLength > 0)
                     {
-                        <div class="particle-trail"
-                             style="left:@(t.X.ToString("F1"))%;top:@(t.Y.ToString("F1"))%;background:@p.Color;opacity:@((t.Alpha * p.Life).ToString("F2"));">
-                        </div>
+                        @foreach (var t in p.Trail)
+                        {
+                            <div class="particle-trail"
+                                 style="left:@(t.X.ToString("F1"))%;top:@(t.Y.ToString("F1"))%;background:@p.Color;opacity:@((t.Alpha * p.Life).ToString("F2"));">
+                            </div>
+                        }
                     }
                 }
-            }
+            </div>
+
+            <div class="experiment-stats">
+                <span>Particles: @particles.Count</span>
+                <span>FPS: @fps</span>
+            </div>
         </div>
 
-        <div class="experiment-stats">
-            <span>Particles: @particles.Count</span>
-            <span>FPS: @fps</span>
+        <div class="particle-mobile-message">
+            <div class="mobile-notice">
+                <span class="mobile-notice-icon">🖥️</span>
+                <h3>Desktop Only</h3>
+                <p>The Particle Universe experiment is best experienced on a desktop browser. Please visit on a larger screen to interact with the particle simulation.</p>
+            </div>
         </div>
     </div>
 </section>
 
 @code {
+    [Parameter] public bool Embedded { get; set; }
+
     private class TrailPoint
     {
         public double X { get; set; }
@@ -94,27 +112,9 @@
         "#f472b6", "#a78bfa", "#34d399", "#fb923c", "#38bdf8"
     };
 
-    private DotNetObjectReference<FunExperiments>? dotNetRef;
-
     protected override void OnInitialized()
     {
         timer = new System.Threading.Timer(Update, null, 0, 16);
-    }
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender)
-        {
-            dotNetRef = DotNetObjectReference.Create(this);
-            await JS.InvokeVoidAsync("particleInterop.init", dotNetRef);
-        }
-    }
-
-    [JSInvokable]
-    public void JsSpawn(double xPct, double yPct, bool isDrag)
-    {
-        int count = isDrag ? Math.Max(1, spawnCount / 3) : spawnCount;
-        SpawnAt(xPct, yPct, count);
     }
 
     private void Update(object? state)
@@ -151,7 +151,6 @@
             p.Y += p.VY;
             p.Life -= p.Decay;
 
-            // Bounce off walls
             if (p.X < 0) { p.X = 0; p.VX = Math.Abs(p.VX) * 0.7; }
             if (p.X > 100) { p.X = 100; p.VX = -Math.Abs(p.VX) * 0.7; }
             if (p.Y < 0) { p.Y = 0; p.VY = Math.Abs(p.VY) * 0.7; }
@@ -161,7 +160,6 @@
                 particles.RemoveAt(i);
         }
 
-        // Cap particle count
         while (particles.Count > 500)
             particles.RemoveAt(0);
 
@@ -188,6 +186,15 @@
         }
     }
 
+    private void OnCanvasClick(MouseEventArgs e)
+    {
+        double xPct = (e.OffsetX / 800.0) * 100;
+        double yPct = (e.OffsetY / 500.0) * 100;
+        xPct = Math.Clamp(xPct, 0, 100);
+        yPct = Math.Clamp(yPct, 0, 100);
+        SpawnAt(xPct, yPct, spawnCount);
+    }
+
     private void TogglePause() => paused = !paused;
 
     private void ClearParticles() => particles.Clear();
@@ -205,6 +212,5 @@
     public void Dispose()
     {
         timer?.Dispose();
-        dotNetRef?.Dispose();
     }
 }

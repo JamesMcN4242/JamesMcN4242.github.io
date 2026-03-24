@@ -1,14 +1,20 @@
 @page "/text-compare"
 @using System.Text
 
-<PageTitle>Text Compare - James McNeil</PageTitle>
+@if (!Embedded)
+{
+    <PageTitle>Text Compare - James McNeil</PageTitle>
+}
 
-<section class="experiment-page">
-    <div class="section-container">
-        <div class="section-header">
-            <h1>Text Compare</h1>
-            <p>Paste two pieces of text below and compare them to see the differences highlighted</p>
-        </div>
+<section class="experiment-page @(Embedded ? "embedded" : "")">
+    <div class="@(Embedded ? "" : "section-container")">
+        @if (!Embedded)
+        {
+            <div class="section-header">
+                <h1>Text Compare</h1>
+                <p>Paste two pieces of text below and compare them to see the differences highlighted</p>
+            </div>
+        }
 
         <div class="compare-inputs">
             <div class="compare-input-col">
@@ -60,6 +66,8 @@
 </section>
 
 @code {
+    [Parameter] public bool Embedded { get; set; }
+
     private string textA = "";
     private string textB = "";
     private List<DiffDisplayLine>? diffLines;

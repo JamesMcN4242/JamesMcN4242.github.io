@@ -185,10 +185,7 @@ public class ProjectService
             Date = new DateTime(2025, 1, 1),
             IsFeatured = false,
             Technologies = new List<string> { "Blazor", "C#", "CSS", "Physics", "Interactive" },
-            Links = new List<ProjectLink>
-            {
-                new() { Label = "Try it", Url = "/funExperiments" }
-            }
+            Links = new List<ProjectLink>()
         },
         new Project
         {
@@ -200,10 +197,7 @@ public class ProjectService
             Date = new DateTime(2025, 1, 1),
             IsFeatured = false,
             Technologies = new List<string> { "Blazor", "C#", "Parsing", "Math", "Visual" },
-            Links = new List<ProjectLink>
-            {
-                new() { Label = "Try it", Url = "/shaderLabExp" }
-            }
+            Links = new List<ProjectLink>()
         },
         new Project
         {
@@ -215,10 +209,7 @@ public class ProjectService
             Date = new DateTime(2025, 1, 1),
             IsFeatured = false,
             Technologies = new List<string> { "Blazor", "C#", "Diff", "LCS Algorithm" },
-            Links = new List<ProjectLink>
-            {
-                new() { Label = "Try it", Url = "/text-compare" }
-            }
+            Links = new List<ProjectLink>()
         }
     };
 

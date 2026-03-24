@@ -1,14 +1,20 @@
 @page "/shaderLabExp"
 @implements IDisposable
 
-<PageTitle>ShaderLab - James McNeil</PageTitle>
+@if (!Embedded)
+{
+    <PageTitle>ShaderLab - James McNeil</PageTitle>
+}
 
-<section class="experiment-page">
-    <div class="section-container">
-        <div class="section-header">
-            <h1>ShaderLab</h1>
-            <p>Write math expressions to generate visual patterns. Variables: <code>x</code>, <code>y</code> (0-1), <code>t</code> (time)</p>
-        </div>
+<section class="experiment-page @(Embedded ? "embedded" : "")">
+    <div class="@(Embedded ? "" : "section-container")">
+        @if (!Embedded)
+        {
+            <div class="section-header">
+                <h1>ShaderLab</h1>
+                <p>Write math expressions to generate visual patterns. Variables: <code>x</code>, <code>y</code> (0-1), <code>t</code> (time)</p>
+            </div>
+        }
 
         <div class="shader-layout">
             <div class="shader-editor">
@@ -71,6 +77,8 @@
 </section>
 
 @code {
+    [Parameter] public bool Embedded { get; set; }
+
     private struct Pixel
     {
         public int R, G, B;

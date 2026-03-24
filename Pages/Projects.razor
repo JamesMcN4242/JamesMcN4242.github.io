@@ -41,12 +41,12 @@
                             </div>
                         </div>
 
-                        @if (project.Links.Any())
+                        @if (project.Links.Where(l => !l.Url.StartsWith("/")).Any())
                         {
                             <div class="sidebar-section">
                                 <h3>Links</h3>
                                 <div class="link-list">
-                                    @foreach (var link in project.Links)
+                                    @foreach (var link in project.Links.Where(l => !l.Url.StartsWith("/")))
                                     {
                                         <a href="@link.Url" target="_blank" rel="noopener noreferrer" class="project-link">
                                             @link.Label &nearr;
@@ -57,6 +57,19 @@
                         }
                     </aside>
                 </div>
+
+                @if (project.Id == "particle-universe")
+                {
+                    <PortfolioSite.Pages.FunExperiments Embedded="true" />
+                }
+                else if (project.Id == "shaderlab")
+                {
+                    <PortfolioSite.Pages.ShaderLabExp Embedded="true" />
+                }
+                else if (project.Id == "text-compare")
+                {
+                    <PortfolioSite.Pages.TextCompare Embedded="true" />
+                }
             </div>
         </section>
     }
