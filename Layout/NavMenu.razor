@@ -1,4 +1,5 @@
 @inject NavigationManager Navigation
+@inject IJSRuntime JS
 @implements IDisposable
 
 <nav class="navbar @(scrolled ? "navbar-scrolled" : "")">
@@ -19,13 +20,58 @@
             <a href="about" class="nav-link @(IsActive("about"))" @onclick="CloseMenu">About</a>
             <a href="cv" class="nav-link @(IsActive("cv"))" @onclick="CloseMenu">CV</a>
             <a href="contact" class="nav-link @(IsActive("contact"))" @onclick="CloseMenu">Contact</a>
+            <button class="settings-btn" @onclick="ToggleSettings" aria-label="Settings" title="Settings">&#9881;</button>
         </div>
     </div>
 </nav>
 
+@if (settingsOpen)
+{
+    <div class="settings-overlay" @onclick="CloseSettings">
+        <div class="settings-modal" @onclick:stopPropagation>
+            <div class="settings-header">
+                <h3>Settings</h3>
+                <button class="settings-close" @onclick="CloseSettings">&#10005;</button>
+            </div>
+
+            <div class="settings-section">
+                <div class="settings-label">Mode</div>
+                <div class="theme-toggle">
+                    <button class="theme-toggle-btn @(currentTheme == "dark" ? "active" : "")" @onclick='() => SetTheme("dark")'>Dark</button>
+                    <button class="theme-toggle-btn @(currentTheme == "light" ? "active" : "")" @onclick='() => SetTheme("light")'>Light</button>
+                </div>
+            </div>
+
+            <div class="settings-section">
+                <div class="settings-label">Colour</div>
+                <div class="color-options">
+                    <button class="color-swatch swatch-purple @(currentColor == "purple" ? "active" : "")" @onclick='() => SetColor("purple")' title="Purple"></button>
+                    <button class="color-swatch swatch-blue @(currentColor == "blue" ? "active" : "")" @onclick='() => SetColor("blue")' title="Blue"></button>
+                    <button class="color-swatch swatch-green @(currentColor == "green" ? "active" : "")" @onclick='() => SetColor("green")' title="Green"></button>
+                    <button class="color-swatch swatch-rose @(currentColor == "rose" ? "active" : "")" @onclick='() => SetColor("rose")' title="Rose"></button>
+                    <button class="color-swatch swatch-amber @(currentColor == "amber" ? "active" : "")" @onclick='() => SetColor("amber")' title="Amber"></button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
 @code {
     private bool menuOpen = false;
     private bool scrolled = false;
+    private bool settingsOpen = false;
+    private string currentTheme = "dark";
+    private string currentColor = "purple";
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            currentTheme = await JS.InvokeAsync<string>("themeInterop.getTheme");
+            currentColor = await JS.InvokeAsync<string>("themeInterop.getColor");
+            StateHasChanged();
+        }
+    }
 
     protected override void OnInitialized()
     {
@@ -40,6 +86,21 @@
 
     private void ToggleMenu() => menuOpen = !menuOpen;
     private void CloseMenu() => menuOpen = false;
+
+    private void ToggleSettings() => settingsOpen = !settingsOpen;
+    private void CloseSettings() => settingsOpen = false;
+
+    private async Task SetTheme(string theme)
+    {
+        currentTheme = theme;
+        await JS.InvokeVoidAsync("themeInterop.setTheme", theme);
+    }
+
+    private async Task SetColor(string color)
+    {
+        currentColor = color;
+        await JS.InvokeVoidAsync("themeInterop.setColor", color);
+    }
 
     private string IsActive(string href)
     {
