@@ -1,0 +1,203 @@
+@page "/play"
+@implements IDisposable
+
+<PageTitle>Play - James McNeil</PageTitle>
+
+<section class="play-page">
+    <div class="section-container">
+        <div class="section-header">
+            <h1>Play / AI Experiment</h1>
+            <p>Here I wanted to see if I could get AI to generate some simple game in Blazor that could be hosted via Github Pages without issue.</p>
+        </div>
+
+        <div class="game-wrapper">
+            <div class="game-hud">
+                <div class="hud-item">
+                    <span class="hud-label">Caught</span>
+                    <span class="hud-value">@caughtCreatures.Count / @creatures.Count</span>
+                </div>
+                <div class="hud-item">
+                    <span class="hud-label">Score</span>
+                    <span class="hud-value">@score</span>
+                </div>
+                <div class="hud-item">
+                    <span class="hud-label">Time</span>
+                    <span class="hud-value">@timeRemaining s</span>
+                </div>
+            </div>
+
+            @if (!gameStarted)
+            {
+                <div class="game-start-screen">
+                    <div class="game-title-icon">🎮</div>
+                    <h2>Creature Catcher</h2>
+                    <p>Creatures will appear on the field — click them before they vanish! Rarer creatures are worth more points but disappear faster.</p>
+                    <button class="btn btn-primary" @onclick="StartGame">Start Game</button>
+                </div>
+            }
+            else if (gameOver)
+            {
+                <div class="game-start-screen">
+                    <div class="game-title-icon">🏆</div>
+                    <h2>Game Over!</h2>
+                    <p>You scored <strong>@score</strong> points and caught <strong>@caughtCreatures.Count</strong> creatures!</p>
+                    <button class="btn btn-primary" @onclick="StartGame">Play Again</button>
+                </div>
+            }
+            else
+            {
+                <div class="game-field">
+                    @foreach (var spawn in activeSpawns)
+                    {
+                        <button class="creature-spawn @(spawn.Caught ? "caught" : "") rarity-@spawn.Creature.Rarity.ToString().ToLower()"
+                                style="left: @(spawn.X)%; top: @(spawn.Y)%;"
+                                @onclick="() => CatchCreature(spawn)"
+                                disabled="@spawn.Caught">
+                            <span class="creature-emoji">@spawn.Creature.Icon</span>
+                            @if (spawn.Caught)
+                            {
+                                <span class="catch-text">+@spawn.Creature.Points</span>
+                            }
+                        </button>
+                    }
+                </div>
+            }
+
+            @if (caughtCreatures.Count > 0)
+            {
+                <div class="collection-section">
+                    <h3>Your Collection</h3>
+                    <div class="collection-grid">
+                        @foreach (var entry in caughtCreatures.OrderByDescending(c => c.Value.Points))
+                        {
+                            <div class="collection-item rarity-@entry.Value.Rarity.ToString().ToLower()">
+                                <span class="creature-emoji">@entry.Value.Icon</span>
+                                <span class="creature-name">@entry.Value.Name</span>
+                                <span class="creature-rarity">@entry.Value.Rarity</span>
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</section>
+
+@code {
+    private record Creature(string Icon, string Name, Rarity Rarity, int Points, int DurationMs);
+    private record SpawnedCreature(Creature Creature, double X, double Y, DateTime ExpiresAt)
+    {
+        public bool Caught { get; set; }
+    }
+
+    private enum Rarity { Common, Uncommon, Rare, Legendary }
+
+    private readonly List<Creature> creatures = new()
+    {
+        new("🐛", "Bug", Rarity.Common, 10, 3000),
+        new("🐌", "Slug", Rarity.Common, 10, 3200),
+        new("🐸", "Frog", Rarity.Common, 15, 2800),
+        new("🦎", "Lizard", Rarity.Common, 15, 2600),
+        new("🐢", "Turtle", Rarity.Common, 10, 3500),
+        new("🐝", "Bee", Rarity.Uncommon, 25, 2200),
+        new("🦋", "Butterfly", Rarity.Uncommon, 30, 2000),
+        new("🦊", "Fox", Rarity.Uncommon, 25, 2400),
+        new("🐙", "Octopus", Rarity.Uncommon, 30, 2000),
+        new("🦅", "Eagle", Rarity.Rare, 50, 1500),
+        new("🐺", "Wolf", Rarity.Rare, 50, 1600),
+        new("🦄", "Unicorn", Rarity.Rare, 60, 1200),
+        new("🐉", "Dragon", Rarity.Legendary, 100, 800),
+        new("🔥", "Phoenix", Rarity.Legendary, 120, 700),
+    };
+
+    private List<SpawnedCreature> activeSpawns = new();
+    private Dictionary<string, Creature> caughtCreatures = new();
+    private int score;
+    private int timeRemaining;
+    private bool gameStarted;
+    private bool gameOver;
+    private System.Threading.Timer? gameTimer;
+    private System.Threading.Timer? spawnTimer;
+    private Random rng = new();
+
+    private void StartGame()
+    {
+        score = 0;
+        timeRemaining = 45;
+        gameStarted = true;
+        gameOver = false;
+        activeSpawns.Clear();
+        caughtCreatures.Clear();
+
+        gameTimer = new System.Threading.Timer(GameTick, null, 0, 1000);
+        spawnTimer = new System.Threading.Timer(SpawnTick, null, 0, 600);
+    }
+
+    private void GameTick(object? state)
+    {
+        timeRemaining--;
+
+        // Remove expired spawns
+        activeSpawns.RemoveAll(s => DateTime.UtcNow > s.ExpiresAt);
+
+        if (timeRemaining <= 0)
+        {
+            gameOver = true;
+            gameTimer?.Dispose();
+            spawnTimer?.Dispose();
+            gameTimer = null;
+            spawnTimer = null;
+            activeSpawns.Clear();
+        }
+
+        InvokeAsync(StateHasChanged);
+    }
+
+    private void SpawnTick(object? state)
+    {
+        if (gameOver || activeSpawns.Count >= 6) return;
+
+        var creature = PickRandomCreature();
+        var spawn = new SpawnedCreature(
+            creature,
+            rng.Next(5, 85),
+            rng.Next(5, 85),
+            DateTime.UtcNow.AddMilliseconds(creature.DurationMs)
+        );
+
+        activeSpawns.Add(spawn);
+        InvokeAsync(StateHasChanged);
+    }
+
+    private Creature PickRandomCreature()
+    {
+        var roll = rng.Next(100);
+        Rarity rarity;
+        if (roll < 45) rarity = Rarity.Common;
+        else if (roll < 75) rarity = Rarity.Uncommon;
+        else if (roll < 93) rarity = Rarity.Rare;
+        else rarity = Rarity.Legendary;
+
+        var pool = creatures.Where(c => c.Rarity == rarity).ToList();
+        return pool[rng.Next(pool.Count)];
+    }
+
+    private void CatchCreature(SpawnedCreature spawn)
+    {
+        if (spawn.Caught || gameOver) return;
+
+        spawn.Caught = true;
+        score += spawn.Creature.Points;
+
+        if (!caughtCreatures.ContainsKey(spawn.Creature.Name))
+        {
+            caughtCreatures[spawn.Creature.Name] = spawn.Creature;
+        }
+    }
+
+    public void Dispose()
+    {
+        gameTimer?.Dispose();
+        spawnTimer?.Dispose();
+    }
+}
