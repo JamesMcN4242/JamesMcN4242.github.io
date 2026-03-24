@@ -64,6 +64,13 @@
                 return localStorage.getItem('site-color') || 'purple';
             }
         };
+
+        window.getElementRect = function(selector) {
+            var el = document.querySelector(selector);
+            if (!el) return [0, 0, 0, 0];
+            var r = el.getBoundingClientRect();
+            return [r.left, r.top, r.width, r.height];
+        };
     </script>
 </body>
 
