@@ -48,38 +48,50 @@
                         </div>
                     </div>
 
-                    <div class="game-field-grid" @ref="gameFieldRef" tabindex="0" @onkeydown="HandleKeyDown">
+                    <div class="game-field-grid" @ref="gameFieldRef" tabindex="0" @onkeydown="HandleKeyDown" @onkeydown:preventDefault>
                         @{
-                            int viewStartRow = Math.Max(0, playerRow - viewRadius);
-                            int viewEndRow = Math.Min(GridSize - 1, playerRow + viewRadius);
-                            int viewStartCol = Math.Max(0, playerCol - viewRadius);
-                            int viewEndCol = Math.Min(GridSize - 1, playerCol + viewRadius);
+                            int viewSize = viewRadius * 2 + 1;
                         }
-                        @for (int r = viewStartRow; r <= viewEndRow; r++)
+                        @for (int vr = 0; vr < viewSize; vr++)
                         {
-                            var row = r;
-                            @for (int c = viewStartCol; c <= viewEndCol; c++)
+                            var viewRow = vr;
+                            @for (int vc = 0; vc < viewSize; vc++)
                             {
-                                var col = c;
-                                var isPlayer = row == playerRow && col == playerCol;
-                                var creature = GetCreatureAt(row, col);
-                                var particle = GetParticleAt(row, col);
-                                var terrainClass = GetTerrainClass(row, col);
+                                var viewCol = vc;
+                                int worldRow = playerRow - viewRadius + viewRow;
+                                int worldCol = playerCol - viewRadius + viewCol;
+                                bool inBounds = worldRow >= 0 && worldRow < GridSize && worldCol >= 0 && worldCol < GridSize;
+                                var isPlayer = viewRow == viewRadius && viewCol == viewRadius;
 
-                                <div class="grid-cell @terrainClass @(isPlayer ? "player-cell" : "") @(creature != null ? "creature-cell rarity-" + creature.Rarity.ToString().ToLower() : "") @(particle != null ? "particle-active" : "")">
-                                    @if (particle != null)
-                                    {
-                                        <span class="particle-effect @particle.Type">@particle.Symbol</span>
-                                    }
-                                    @if (isPlayer)
-                                    {
-                                        <span class="player-sprite">🧑</span>
-                                    }
-                                    else if (creature != null)
-                                    {
-                                        <span class="creature-sprite">@creature.Icon</span>
-                                    }
-                                </div>
+                                if (!inBounds)
+                                {
+                                    <div class="grid-cell terrain-void"></div>
+                                }
+                                else
+                                {
+                                    var creature = GetCreatureAt(worldRow, worldCol);
+                                    var particle = GetParticleAt(worldRow, worldCol);
+                                    var terrainClass = GetTerrainClass(worldRow, worldCol);
+
+                                    <div class="grid-cell @terrainClass @(isPlayer ? "player-cell" : "") @(creature != null ? "creature-cell rarity-" + creature.Rarity.ToString().ToLower() : "") @(particle != null ? "particle-active" : "")">
+                                        @if (particle != null)
+                                        {
+                                            <span class="particle-effect @particle.Type">@particle.Symbol</span>
+                                        }
+                                        @if (isPlayer)
+                                        {
+                                            <span class="player-sprite">🧑</span>
+                                        }
+                                        else if (IsTree(worldRow, worldCol))
+                                        {
+                                            <span class="tree-sprite">🌲</span>
+                                        }
+                                        else if (creature != null)
+                                        {
+                                            <span class="creature-sprite">@creature.Icon</span>
+                                        }
+                                    </div>
+                                }
                             }
                         }
                     </div>
@@ -108,7 +120,8 @@
                                     var col = c;
                                     var isP = row == playerRow && col == playerCol;
                                     var cr = GetCreatureAt(row, col);
-                                    <div class="minimap-cell @(isP ? "minimap-player" : "") @(cr != null ? "minimap-creature minimap-" + cr.Rarity.ToString().ToLower() : "")"></div>
+                                    var isTreeCell = IsTree(row, col);
+                                    <div class="minimap-cell @(isP ? "minimap-player" : "") @(isTreeCell ? "minimap-tree" : "") @(cr != null ? "minimap-creature minimap-" + cr.Rarity.ToString().ToLower() : "")"></div>
                                 }
                             }
                         </div>
@@ -174,6 +187,7 @@
     private int playerRow;
     private int playerCol;
     private int[,]? terrainMap;
+    private bool[,]? treeMap;
     private System.Threading.Timer? gameTimer;
     private System.Threading.Timer? spawnTimer;
     private Random rng = new();
@@ -189,24 +203,40 @@
     private void GenerateTerrain()
     {
         terrainMap = new int[GridSize, GridSize];
+        treeMap = new bool[GridSize, GridSize];
+        int centerRow = GridSize / 2;
+        int centerCol = GridSize / 2;
+
         for (int r = 0; r < GridSize; r++)
         {
             for (int c = 0; c < GridSize; c++)
             {
-                terrainMap[r, c] = rng.Next(10); // 0-3 grass, 4-6 tall grass, 7-8 flowers, 9 rock
+                terrainMap[r, c] = rng.Next(8); // 0-3 grass, 4-5 tall grass, 6-7 flowers
+
+                // ~12% chance for a tree, but not at player start or adjacent cells
+                if (rng.Next(100) < 12 && !(Math.Abs(r - centerRow) <= 1 && Math.Abs(c - centerCol) <= 1))
+                {
+                    treeMap[r, c] = true;
+                }
             }
         }
+    }
+
+    private bool IsTree(int row, int col)
+    {
+        if (treeMap == null) return false;
+        return treeMap[row, col];
     }
 
     private string GetTerrainClass(int row, int col)
     {
         if (terrainMap == null) return "terrain-grass";
+        if (IsTree(row, col)) return "terrain-tree";
         return terrainMap[row, col] switch
         {
             <= 3 => "terrain-grass",
-            <= 6 => "terrain-tallgrass",
-            <= 8 => "terrain-flowers",
-            _ => "terrain-rock"
+            <= 5 => "terrain-tallgrass",
+            _ => "terrain-flowers"
         };
     }
 
@@ -260,7 +290,7 @@
             row = rng.Next(GridSize);
             col = rng.Next(GridSize);
             attempts++;
-        } while ((row == playerRow && col == playerCol || GetCreatureAt(row, col) != null) && attempts < 50);
+        } while ((row == playerRow && col == playerCol || GetCreatureAt(row, col) != null || IsTree(row, col)) && attempts < 50);
 
         if (attempts >= 50) return;
 
@@ -329,6 +359,7 @@
         int newCol = playerCol + dCol;
 
         if (newRow < 0 || newRow >= GridSize || newCol < 0 || newCol >= GridSize) return;
+        if (IsTree(newRow, newCol)) return;
 
         playerRow = newRow;
         playerCol = newCol;
