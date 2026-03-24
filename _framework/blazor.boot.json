@@ -1,7 +1,7 @@
 {
   "mainAssemblyName": "PortfolioSite",
   "resources": {
-    "hash": "sha256-lIys8FRUBOYqIq7QW0M6QLSpILBUk78bUJl++OQXzHE=",
+    "hash": "sha256-Tga5uklLO2tohU5CWuuxNgHDiOT+jFZQZO2edv/VoQM=",
     "jsModuleNative": {
       "dotnet.native.js": "sha256-NljIbpK/1KCj0+knpX8U77Rbl5kTtfFIuFjK7AuczEw="
     },
@@ -18,8 +18,8 @@
     },
     "coreAssembly": {},
     "assembly": {
-      "Microsoft.AspNetCore.Components.wasm": "sha256-Epvx7Ngnmw9BGMTBVW8JPIdD+wDlscGqQVPipaB3MWU=",
-      "Microsoft.AspNetCore.Components.Web.wasm": "sha256-aLs9FzxsnW4ukl4DJbus8FN9ykmHMxadhu0OE5uFaVY=",
+      "Microsoft.AspNetCore.Components.wasm": "sha256-pxQKS6IUoHQvnH35AJmtUSICg1mFcZVrwc2lBMHA6Dk=",
+      "Microsoft.AspNetCore.Components.Web.wasm": "sha256-IzsWr9KM2Ah9GOumQ0Q881Gn3djUPfmxG7Qkgjc+nZw=",
       "Microsoft.AspNetCore.Components.WebAssembly.wasm": "sha256-HkY/ueMntnr2loHI/qQbYwrBnVrVrWLVE9P3W1+4GHo=",
       "Microsoft.Extensions.Configuration.wasm": "sha256-od574rRtVVRJj+24jbl8j3GdQFpxlJOpSx+pEMw1Q18=",
       "Microsoft.Extensions.Configuration.Abstractions.wasm": "sha256-XR+WUfg8LtnrwdXFBnV+qO3ROyp6cYCfl1AZajIAheM=",
@@ -42,12 +42,12 @@
       "System.Net.Primitives.wasm": "sha256-h7OMygXcLfv3yS7oYcfmRdLJJUVN7MbIBGVZOuOvonM=",
       "System.Private.Uri.wasm": "sha256-uAmLYKQU3uJzUL+ylysXBSahZji2f/9/v9VcqrDxEyU=",
       "System.Runtime.InteropServices.JavaScript.wasm": "sha256-6hdGkh80Le78a9cg0/X1jE6bN7MJcXfdZhyjTFvqx4M=",
-      "System.Runtime.wasm": "sha256-2BxZzzbvy2JLoalUqpISOYMLE6hHtFTB8OTHuWhgkWE=",
+      "System.Runtime.wasm": "sha256-BnJ1dsuJI5vaziorFgNJwRDFKn+420JSMF/qr8Xcr5Y=",
       "System.Text.Encodings.Web.wasm": "sha256-QlEAY71V5tn3FS4QI+N/MDAf43l3aWX0SFMMJbfw3C8=",
       "System.Text.Json.wasm": "sha256-1KgIAMAl2smt63FtxqMONS0r7ox8LJZ7eD4HpHMyFeQ=",
       "System.Text.RegularExpressions.wasm": "sha256-nE7XCiyeCswUnRGdXOQvcHP+XMWXcToACrazpZlocBI=",
       "System.Private.CoreLib.wasm": "sha256-om1JImBOzfNfLtTeTdlePgsat3E2eDGPybZi1Nn5owk=",
-      "PortfolioSite.wasm": "sha256-G3RU/LnsBFWdeDUeMWUgoZ741TioUb0gRr/K6vTmGWs="
+      "PortfolioSite.wasm": "sha256-2fbUV8UuxVbLXHmVLrDPrLoCanQQtpFfCkVpMHGMiKQ="
     }
   },
   "cacheBootResources": true,

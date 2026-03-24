@@ -13,6 +13,14 @@
     <link rel="stylesheet" href="css/app.css" />
     <link rel="icon" type="image/png" href="favicon.png" />
     <link href="PortfolioSite.styles.css" rel="stylesheet" />
+    <script>
+        (function() {
+            var theme = localStorage.getItem('site-theme') || 'dark';
+            var color = localStorage.getItem('site-color') || 'purple';
+            if (theme === 'light') document.documentElement.setAttribute('data-theme', 'light');
+            if (color && color !== 'purple') document.documentElement.setAttribute('data-color', color);
+        })();
+    </script>
 </head>
 
 <body>
@@ -31,6 +39,32 @@
         <a class="dismiss">&#10005;</a>
     </div>
     <script src="_framework/blazor.webassembly.js"></script>
+    <script>
+        window.themeInterop = {
+            setTheme: function(theme) {
+                if (theme === 'light') {
+                    document.documentElement.setAttribute('data-theme', 'light');
+                } else {
+                    document.documentElement.removeAttribute('data-theme');
+                }
+                localStorage.setItem('site-theme', theme);
+            },
+            setColor: function(color) {
+                if (color && color !== 'purple') {
+                    document.documentElement.setAttribute('data-color', color);
+                } else {
+                    document.documentElement.removeAttribute('data-color');
+                }
+                localStorage.setItem('site-color', color);
+            },
+            getTheme: function() {
+                return localStorage.getItem('site-theme') || 'dark';
+            },
+            getColor: function() {
+                return localStorage.getItem('site-color') || 'purple';
+            }
+        };
+    </script>
 </body>
 
 </html>
