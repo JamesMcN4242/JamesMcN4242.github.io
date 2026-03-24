@@ -1,0 +1,210 @@
+@implements IDisposable
+
+@if (!gameStarted)
+{
+    <div class="game-start-screen">
+        <div class="game-title-icon">🐍</div>
+        <h2>Snake</h2>
+        <p>Use arrow keys or WASD to move. Eat food to grow and score points. Don't hit the walls or yourself!</p>
+        <button class="btn btn-primary" @onclick="StartGame">Start Game</button>
+    </div>
+}
+else if (gameOver)
+{
+    <div class="game-start-screen">
+        <div class="game-title-icon">💀</div>
+        <h2>Game Over!</h2>
+        <p>You scored <strong>@score</strong> points with a snake of length <strong>@snake.Count</strong>!</p>
+        <button class="btn btn-primary" @onclick="StartGame">Play Again</button>
+    </div>
+}
+else
+{
+    <div class="game-hud">
+        <div class="hud-item">
+            <span class="hud-label">Score</span>
+            <span class="hud-value">@score</span>
+        </div>
+        <div class="hud-item">
+            <span class="hud-label">Length</span>
+            <span class="hud-value">@snake.Count</span>
+        </div>
+    </div>
+
+    <div class="snake-field" @ref="snakeFieldRef" tabindex="0" @onkeydown="HandleKeyDown" @onkeydown:preventDefault>
+        @for (int r = 0; r < GridRows; r++)
+        {
+            var row = r;
+            @for (int c = 0; c < GridCols; c++)
+            {
+                var col = c;
+                var isHead = snake.Count > 0 && snake[0].Row == row && snake[0].Col == col;
+                var isBody = !isHead && snake.Any(s => s.Row == row && s.Col == col);
+                var isFood = foodRow == row && foodCol == col;
+
+                <div class="snake-cell @(isHead ? "snake-head" : "") @(isBody ? "snake-body" : "") @(isFood ? "snake-food" : "")">
+                    @if (isHead)
+                    {
+                        <span>🟢</span>
+                    }
+                    else if (isFood)
+                    {
+                        <span>🍎</span>
+                    }
+                </div>
+            }
+        }
+    </div>
+
+    <div class="mobile-controls">
+        <div class="controls-row">
+            <button class="control-btn" @onclick='() => SetDirection(-1, 0)'>▲</button>
+        </div>
+        <div class="controls-row">
+            <button class="control-btn" @onclick='() => SetDirection(0, -1)'>◀</button>
+            <button class="control-btn" @onclick='() => SetDirection(1, 0)'>▼</button>
+            <button class="control-btn" @onclick='() => SetDirection(0, 1)'>▶</button>
+        </div>
+    </div>
+}
+
+@code {
+    private const int GridRows = 20;
+    private const int GridCols = 20;
+
+    private record Cell(int Row, int Col);
+
+    private ElementReference snakeFieldRef;
+    private List<Cell> snake = new();
+    private int dirRow = 0;
+    private int dirCol = 1;
+    private int nextDirRow = 0;
+    private int nextDirCol = 1;
+    private int foodRow;
+    private int foodCol;
+    private int score;
+    private bool gameStarted;
+    private bool gameOver;
+    private System.Threading.Timer? gameTimer;
+    private Random rng = new();
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (gameStarted && !gameOver)
+        {
+            try { await snakeFieldRef.FocusAsync(); } catch { }
+        }
+    }
+
+    private void StartGame()
+    {
+        snake.Clear();
+        int startRow = GridRows / 2;
+        int startCol = GridCols / 2;
+        snake.Add(new Cell(startRow, startCol));
+        snake.Add(new Cell(startRow, startCol - 1));
+        snake.Add(new Cell(startRow, startCol - 2));
+
+        dirRow = 0;
+        dirCol = 1;
+        nextDirRow = 0;
+        nextDirCol = 1;
+        score = 0;
+        gameStarted = true;
+        gameOver = false;
+
+        SpawnFood();
+        gameTimer = new System.Threading.Timer(GameLoop, null, 0, 120);
+    }
+
+    private void SpawnFood()
+    {
+        int attempts = 0;
+        do
+        {
+            foodRow = rng.Next(GridRows);
+            foodCol = rng.Next(GridCols);
+            attempts++;
+        } while (snake.Any(s => s.Row == foodRow && s.Col == foodCol) && attempts < 200);
+    }
+
+    private void GameLoop(object? state)
+    {
+        if (gameOver) return;
+
+        dirRow = nextDirRow;
+        dirCol = nextDirCol;
+
+        var head = snake[0];
+        int newRow = head.Row + dirRow;
+        int newCol = head.Col + dirCol;
+
+        // Wall collision
+        if (newRow < 0 || newRow >= GridRows || newCol < 0 || newCol >= GridCols)
+        {
+            EndGame();
+            return;
+        }
+
+        // Self collision
+        if (snake.Any(s => s.Row == newRow && s.Col == newCol))
+        {
+            EndGame();
+            return;
+        }
+
+        snake.Insert(0, new Cell(newRow, newCol));
+
+        if (newRow == foodRow && newCol == foodCol)
+        {
+            score += 10;
+            SpawnFood();
+        }
+        else
+        {
+            snake.RemoveAt(snake.Count - 1);
+        }
+
+        InvokeAsync(StateHasChanged);
+    }
+
+    private void HandleKeyDown(KeyboardEventArgs e)
+    {
+        switch (e.Key)
+        {
+            case "ArrowUp" or "w" or "W":
+                SetDirection(-1, 0);
+                break;
+            case "ArrowDown" or "s" or "S":
+                SetDirection(1, 0);
+                break;
+            case "ArrowLeft" or "a" or "A":
+                SetDirection(0, -1);
+                break;
+            case "ArrowRight" or "d" or "D":
+                SetDirection(0, 1);
+                break;
+        }
+    }
+
+    private void SetDirection(int dRow, int dCol)
+    {
+        // Don't allow reversing direction
+        if (dRow == -dirRow && dCol == -dirCol) return;
+        nextDirRow = dRow;
+        nextDirCol = dCol;
+    }
+
+    private void EndGame()
+    {
+        gameOver = true;
+        gameTimer?.Dispose();
+        gameTimer = null;
+        InvokeAsync(StateHasChanged);
+    }
+
+    public void Dispose()
+    {
+        gameTimer?.Dispose();
+    }
+}

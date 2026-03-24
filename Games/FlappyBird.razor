@@ -1,0 +1,198 @@
+@implements IDisposable
+
+@if (!gameStarted)
+{
+    <div class="game-start-screen">
+        <div class="game-title-icon">🐦</div>
+        <h2>Flappy Bird</h2>
+        <p>Press Space or click/tap to flap. Avoid the pipes and see how far you can go!</p>
+        <button class="btn btn-primary" @onclick="StartGame">Start Game</button>
+    </div>
+}
+else if (gameOver)
+{
+    <div class="game-start-screen">
+        <div class="game-title-icon">💥</div>
+        <h2>Game Over!</h2>
+        <p>You scored <strong>@score</strong> points!</p>
+        <button class="btn btn-primary" @onclick="StartGame">Play Again</button>
+    </div>
+}
+else
+{
+    <div class="game-hud">
+        <div class="hud-item">
+            <span class="hud-label">Score</span>
+            <span class="hud-value">@score</span>
+        </div>
+    </div>
+
+    <div class="flappy-field" @ref="flappyFieldRef" tabindex="0" @onkeydown="HandleKeyDown" @onkeydown:preventDefault @onclick="Flap">
+        <!-- Bird -->
+        <div class="flappy-bird" style="top: @(birdY)px;">🐦</div>
+
+        <!-- Pipes -->
+        @foreach (var pipe in pipes)
+        {
+            <div class="flappy-pipe pipe-top" style="left: @(pipe.X)px; height: @(pipe.GapTop)px;"></div>
+            <div class="flappy-pipe pipe-bottom" style="left: @(pipe.X)px; top: @(pipe.GapTop + PipeGap)px; height: @(FieldHeight - pipe.GapTop - PipeGap)px;"></div>
+            @if (pipe.Scored)
+            {
+                <span class="flappy-score-pop" style="left: @(pipe.X + 20)px; top: @(pipe.GapTop + PipeGap / 2)px;">+1</span>
+            }
+        }
+
+        <!-- Ground -->
+        <div class="flappy-ground"></div>
+    </div>
+
+    <div class="mobile-controls">
+        <div class="controls-row">
+            <button class="control-btn flap-btn" @onclick="Flap">FLAP ▲</button>
+        </div>
+    </div>
+}
+
+@code {
+    private const int FieldWidth = 400;
+    private const int FieldHeight = 500;
+    private const int PipeGap = 130;
+    private const int PipeWidth = 50;
+    private const double Gravity = 0.5;
+    private const double FlapStrength = -7;
+    private const double PipeSpeed = 2.5;
+
+    private record PipeData(double X, int GapTop)
+    {
+        public double X { get; set; } = X;
+        public bool Passed { get; set; }
+        public bool Scored { get; set; }
+        public DateTime ScoredAt { get; set; }
+    }
+
+    private ElementReference flappyFieldRef;
+    private double birdY;
+    private double birdVelocity;
+    private List<PipeData> pipes = new();
+    private int score;
+    private bool gameStarted;
+    private bool gameOver;
+    private System.Threading.Timer? gameTimer;
+    private Random rng = new();
+    private int frameCount;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (gameStarted && !gameOver)
+        {
+            try { await flappyFieldRef.FocusAsync(); } catch { }
+        }
+    }
+
+    private void StartGame()
+    {
+        birdY = FieldHeight / 2.0 - 15;
+        birdVelocity = 0;
+        pipes.Clear();
+        score = 0;
+        frameCount = 0;
+        gameStarted = true;
+        gameOver = false;
+
+        gameTimer = new System.Threading.Timer(GameLoop, null, 0, 20);
+    }
+
+    private void GameLoop(object? state)
+    {
+        if (gameOver) return;
+
+        frameCount++;
+
+        // Bird physics
+        birdVelocity += Gravity;
+        birdY += birdVelocity;
+
+        // Spawn pipes
+        if (frameCount % 90 == 0)
+        {
+            int gapTop = rng.Next(60, FieldHeight - PipeGap - 80);
+            pipes.Add(new PipeData(FieldWidth, gapTop));
+        }
+
+        // Move pipes and check scoring
+        var now = DateTime.UtcNow;
+        foreach (var pipe in pipes)
+        {
+            pipe.X -= PipeSpeed;
+
+            if (!pipe.Passed && pipe.X + PipeWidth < 50)
+            {
+                pipe.Passed = true;
+                pipe.Scored = true;
+                pipe.ScoredAt = now;
+                score++;
+            }
+
+            if (pipe.Scored && (now - pipe.ScoredAt).TotalMilliseconds > 500)
+            {
+                pipe.Scored = false;
+            }
+        }
+
+        pipes.RemoveAll(p => p.X < -PipeWidth);
+
+        // Collision detection
+        if (birdY < 0 || birdY > FieldHeight - 50)
+        {
+            EndGame();
+            return;
+        }
+
+        const int birdLeft = 40;
+        const int birdRight = 70;
+        const int birdSize = 24;
+
+        foreach (var pipe in pipes)
+        {
+            if (birdRight > pipe.X && birdLeft < pipe.X + PipeWidth)
+            {
+                if (birdY < pipe.GapTop || birdY + birdSize > pipe.GapTop + PipeGap)
+                {
+                    EndGame();
+                    return;
+                }
+            }
+        }
+
+        InvokeAsync(StateHasChanged);
+    }
+
+    private void Flap()
+    {
+        if (!gameOver)
+        {
+            birdVelocity = FlapStrength;
+        }
+    }
+
+    private void HandleKeyDown(KeyboardEventArgs e)
+    {
+        if (e.Key == " " || e.Key == "ArrowUp" || e.Key == "w" || e.Key == "W")
+        {
+            Flap();
+        }
+    }
+
+    private void EndGame()
+    {
+        gameOver = true;
+        gameTimer?.Dispose();
+        gameTimer = null;
+        InvokeAsync(StateHasChanged);
+    }
+
+    public void Dispose()
+    {
+        gameTimer?.Dispose();
+    }
+}

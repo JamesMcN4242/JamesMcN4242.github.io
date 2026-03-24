@@ -1,6 +1,4 @@
 @page "/play"
-@inject IJSRuntime JS
-@implements IDisposable
 
 <PageTitle>Play - James McNeil</PageTitle>
 
@@ -11,381 +9,36 @@
             <p>Here I wanted to see if I could get AI to generate some simple game in Blazor that could be hosted via Github Pages without issue.</p>
         </div>
 
-        @if (!gameStarted)
-        {
-            <div class="game-start-screen">
-                <div class="game-title-icon">🎮</div>
-                <h2>Creature Catcher</h2>
-                <p>Explore the grid and walk into creatures to catch them! Rarer creatures are worth more points. Use arrow keys or WASD to move. On mobile, use the on-screen controls.</p>
-                <button class="btn btn-primary" @onclick="StartGame">Start Game</button>
-            </div>
-        }
-        else if (gameOver)
-        {
-            <div class="game-start-screen">
-                <div class="game-title-icon">🏆</div>
-                <h2>Game Over!</h2>
-                <p>You scored <strong>@score</strong> points and caught <strong>@caughtCreatures.Count</strong> creatures!</p>
-                <button class="btn btn-primary" @onclick="StartGame">Play Again</button>
-            </div>
-        }
-        else
-        {
-            <div class="game-layout">
-                <div class="game-main">
-                    <div class="game-hud">
-                        <div class="hud-item">
-                            <span class="hud-label">Caught</span>
-                            <span class="hud-value">@caughtCreatures.Count</span>
-                        </div>
-                        <div class="hud-item">
-                            <span class="hud-label">Score</span>
-                            <span class="hud-value">@score</span>
-                        </div>
-                        <div class="hud-item">
-                            <span class="hud-label">Time</span>
-                            <span class="hud-value">@timeRemaining s</span>
-                        </div>
-                    </div>
+        <div class="game-tabs">
+            <button class="game-tab @(activeTab == 0 ? "active" : "")" @onclick="() => SwitchTab(0)">🎮 Creature Catcher</button>
+            <button class="game-tab @(activeTab == 1 ? "active" : "")" @onclick="() => SwitchTab(1)">🐦 Flappy Bird</button>
+            <button class="game-tab @(activeTab == 2 ? "active" : "")" @onclick="() => SwitchTab(2)">🐍 Snake</button>
+        </div>
 
-                    <div class="game-field-grid" @ref="gameFieldRef" tabindex="0" @onkeydown="HandleKeyDown" @onkeydown:preventDefault>
-                        @{
-                            int viewSize = viewRadius * 2 + 1;
-                        }
-                        @for (int vr = 0; vr < viewSize; vr++)
-                        {
-                            var viewRow = vr;
-                            @for (int vc = 0; vc < viewSize; vc++)
-                            {
-                                var viewCol = vc;
-                                int worldRow = playerRow - viewRadius + viewRow;
-                                int worldCol = playerCol - viewRadius + viewCol;
-                                bool inBounds = worldRow >= 0 && worldRow < GridSize && worldCol >= 0 && worldCol < GridSize;
-                                var isPlayer = viewRow == viewRadius && viewCol == viewRadius;
-
-                                if (!inBounds)
-                                {
-                                    <div class="grid-cell terrain-void"></div>
-                                }
-                                else
-                                {
-                                    var creature = GetCreatureAt(worldRow, worldCol);
-                                    var particle = GetParticleAt(worldRow, worldCol);
-                                    var terrainClass = GetTerrainClass(worldRow, worldCol);
-
-                                    <div class="grid-cell @terrainClass @(isPlayer ? "player-cell" : "") @(creature != null ? "creature-cell rarity-" + creature.Rarity.ToString().ToLower() : "") @(particle != null ? "particle-active" : "")">
-                                        @if (particle != null)
-                                        {
-                                            <span class="particle-effect @particle.Type">@particle.Symbol</span>
-                                        }
-                                        @if (isPlayer)
-                                        {
-                                            <span class="player-sprite">🧑</span>
-                                        }
-                                        else if (IsTree(worldRow, worldCol))
-                                        {
-                                            <span class="tree-sprite">🌲</span>
-                                        }
-                                        else if (creature != null)
-                                        {
-                                            <span class="creature-sprite">@creature.Icon</span>
-                                        }
-                                    </div>
-                                }
-                            }
-                        }
-                    </div>
-
-                    <div class="mobile-controls">
-                        <div class="controls-row">
-                            <button class="control-btn" @onclick='() => MovePlayer(-1, 0)'>▲</button>
-                        </div>
-                        <div class="controls-row">
-                            <button class="control-btn" @onclick='() => MovePlayer(0, -1)'>◀</button>
-                            <button class="control-btn" @onclick='() => MovePlayer(1, 0)'>▼</button>
-                            <button class="control-btn" @onclick='() => MovePlayer(0, 1)'>▶</button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="game-sidebar">
-                    <div class="minimap">
-                        <h3>Map</h3>
-                        <div class="minimap-grid">
-                            @for (int r = 0; r < GridSize; r++)
-                            {
-                                var row = r;
-                                @for (int c = 0; c < GridSize; c++)
-                                {
-                                    var col = c;
-                                    var isP = row == playerRow && col == playerCol;
-                                    var cr = GetCreatureAt(row, col);
-                                    var isTreeCell = IsTree(row, col);
-                                    <div class="minimap-cell @(isP ? "minimap-player" : "") @(isTreeCell ? "minimap-tree" : "") @(cr != null ? "minimap-creature minimap-" + cr.Rarity.ToString().ToLower() : "")"></div>
-                                }
-                            }
-                        </div>
-                    </div>
-
-                    @if (caughtCreatures.Count > 0)
-                    {
-                        <div class="collection-section">
-                            <h3>Collection (@caughtCreatures.Count)</h3>
-                            <div class="collection-grid">
-                                @foreach (var entry in caughtCreatures.OrderByDescending(c => c.Value.Points))
-                                {
-                                    <div class="collection-item rarity-@entry.Value.Rarity.ToString().ToLower()">
-                                        <span class="creature-emoji">@entry.Value.Icon</span>
-                                        <span class="creature-name">@entry.Value.Name</span>
-                                    </div>
-                                }
-                            </div>
-                        </div>
-                    }
-                </div>
-            </div>
-        }
+        <div class="game-tab-content">
+            @switch (activeTab)
+            {
+                case 0:
+                    <CreatureCatcher @key="tabKey" />
+                    break;
+                case 1:
+                    <FlappyBird @key="tabKey" />
+                    break;
+                case 2:
+                    <SnakeGame @key="tabKey" />
+                    break;
+            }
+        </div>
     </div>
 </section>
 
 @code {
-    private const int GridSize = 20;
-    private const int viewRadius = 5;
-    private ElementReference gameFieldRef;
+    private int activeTab = 0;
+    private int tabKey = 0;
 
-    private record Creature(string Icon, string Name, Rarity Rarity, int Points);
-    private record SpawnedCreature(Creature Creature, int Row, int Col, DateTime ExpiresAt);
-    private record Particle(string Symbol, string Type, int Row, int Col, DateTime ExpiresAt);
-
-    private enum Rarity { Common, Uncommon, Rare, Legendary }
-
-    private readonly List<Creature> creatures = new()
+    private void SwitchTab(int tab)
     {
-        new("🐛", "Bug", Rarity.Common, 10),
-        new("🐌", "Slug", Rarity.Common, 10),
-        new("🐸", "Frog", Rarity.Common, 15),
-        new("🦎", "Lizard", Rarity.Common, 15),
-        new("🐢", "Turtle", Rarity.Common, 10),
-        new("🐝", "Bee", Rarity.Uncommon, 25),
-        new("🦋", "Butterfly", Rarity.Uncommon, 30),
-        new("🦊", "Fox", Rarity.Uncommon, 25),
-        new("🐙", "Octopus", Rarity.Uncommon, 30),
-        new("🦅", "Eagle", Rarity.Rare, 50),
-        new("🐺", "Wolf", Rarity.Rare, 50),
-        new("🦄", "Unicorn", Rarity.Rare, 60),
-        new("🐉", "Dragon", Rarity.Legendary, 100),
-        new("🔥", "Phoenix", Rarity.Legendary, 120),
-    };
-
-    private List<SpawnedCreature> spawnedCreatures = new();
-    private List<Particle> particles = new();
-    private Dictionary<string, Creature> caughtCreatures = new();
-    private int score;
-    private int timeRemaining;
-    private bool gameStarted;
-    private bool gameOver;
-    private int playerRow;
-    private int playerCol;
-    private int[,]? terrainMap;
-    private bool[,]? treeMap;
-    private System.Threading.Timer? gameTimer;
-    private System.Threading.Timer? spawnTimer;
-    private Random rng = new();
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (gameStarted && !gameOver)
-        {
-            await gameFieldRef.FocusAsync();
-        }
-    }
-
-    private void GenerateTerrain()
-    {
-        terrainMap = new int[GridSize, GridSize];
-        treeMap = new bool[GridSize, GridSize];
-        int centerRow = GridSize / 2;
-        int centerCol = GridSize / 2;
-
-        for (int r = 0; r < GridSize; r++)
-        {
-            for (int c = 0; c < GridSize; c++)
-            {
-                terrainMap[r, c] = rng.Next(8); // 0-3 grass, 4-5 tall grass, 6-7 flowers
-
-                // ~12% chance for a tree, but not at player start or adjacent cells
-                if (rng.Next(100) < 12 && !(Math.Abs(r - centerRow) <= 1 && Math.Abs(c - centerCol) <= 1))
-                {
-                    treeMap[r, c] = true;
-                }
-            }
-        }
-    }
-
-    private bool IsTree(int row, int col)
-    {
-        if (treeMap == null) return false;
-        return treeMap[row, col];
-    }
-
-    private string GetTerrainClass(int row, int col)
-    {
-        if (terrainMap == null) return "terrain-grass";
-        if (IsTree(row, col)) return "terrain-tree";
-        return terrainMap[row, col] switch
-        {
-            <= 3 => "terrain-grass",
-            <= 5 => "terrain-tallgrass",
-            _ => "terrain-flowers"
-        };
-    }
-
-    private void StartGame()
-    {
-        score = 0;
-        timeRemaining = 60;
-        gameStarted = true;
-        gameOver = false;
-        playerRow = GridSize / 2;
-        playerCol = GridSize / 2;
-        spawnedCreatures.Clear();
-        caughtCreatures.Clear();
-        particles.Clear();
-        GenerateTerrain();
-
-        gameTimer = new System.Threading.Timer(GameTick, null, 0, 1000);
-        spawnTimer = new System.Threading.Timer(SpawnTick, null, 500, 1200);
-    }
-
-    private void GameTick(object? state)
-    {
-        timeRemaining--;
-        var now = DateTime.UtcNow;
-        spawnedCreatures.RemoveAll(s => now > s.ExpiresAt);
-        particles.RemoveAll(p => now > p.ExpiresAt);
-
-        if (timeRemaining <= 0)
-        {
-            gameOver = true;
-            gameTimer?.Dispose();
-            spawnTimer?.Dispose();
-            gameTimer = null;
-            spawnTimer = null;
-            spawnedCreatures.Clear();
-            particles.Clear();
-        }
-
-        InvokeAsync(StateHasChanged);
-    }
-
-    private void SpawnTick(object? state)
-    {
-        if (gameOver || spawnedCreatures.Count >= 8) return;
-
-        var creature = PickRandomCreature();
-        int row, col;
-        int attempts = 0;
-        do
-        {
-            row = rng.Next(GridSize);
-            col = rng.Next(GridSize);
-            attempts++;
-        } while ((row == playerRow && col == playerCol || GetCreatureAt(row, col) != null || IsTree(row, col)) && attempts < 50);
-
-        if (attempts >= 50) return;
-
-        int durationSec = creature.Rarity switch
-        {
-            Rarity.Common => rng.Next(8, 15),
-            Rarity.Uncommon => rng.Next(6, 11),
-            Rarity.Rare => rng.Next(4, 8),
-            Rarity.Legendary => rng.Next(3, 6),
-            _ => 10
-        };
-
-        spawnedCreatures.Add(new SpawnedCreature(creature, row, col, DateTime.UtcNow.AddSeconds(durationSec)));
-        particles.Add(new Particle("✦", "spawn-particle", row, col, DateTime.UtcNow.AddMilliseconds(800)));
-
-        InvokeAsync(StateHasChanged);
-    }
-
-    private Creature PickRandomCreature()
-    {
-        var roll = rng.Next(100);
-        Rarity rarity;
-        if (roll < 45) rarity = Rarity.Common;
-        else if (roll < 75) rarity = Rarity.Uncommon;
-        else if (roll < 93) rarity = Rarity.Rare;
-        else rarity = Rarity.Legendary;
-
-        var pool = creatures.Where(c => c.Rarity == rarity).ToList();
-        return pool[rng.Next(pool.Count)];
-    }
-
-    private Creature? GetCreatureAt(int row, int col)
-    {
-        return spawnedCreatures.FirstOrDefault(s => s.Row == row && s.Col == col)?.Creature;
-    }
-
-    private Particle? GetParticleAt(int row, int col)
-    {
-        return particles.FirstOrDefault(p => p.Row == row && p.Col == col);
-    }
-
-    private void HandleKeyDown(KeyboardEventArgs e)
-    {
-        switch (e.Key)
-        {
-            case "ArrowUp" or "w" or "W":
-                MovePlayer(-1, 0);
-                break;
-            case "ArrowDown" or "s" or "S":
-                MovePlayer(1, 0);
-                break;
-            case "ArrowLeft" or "a" or "A":
-                MovePlayer(0, -1);
-                break;
-            case "ArrowRight" or "d" or "D":
-                MovePlayer(0, 1);
-                break;
-        }
-    }
-
-    private void MovePlayer(int dRow, int dCol)
-    {
-        if (gameOver) return;
-
-        int newRow = playerRow + dRow;
-        int newCol = playerCol + dCol;
-
-        if (newRow < 0 || newRow >= GridSize || newCol < 0 || newCol >= GridSize) return;
-        if (IsTree(newRow, newCol)) return;
-
-        playerRow = newRow;
-        playerCol = newCol;
-
-        var spawn = spawnedCreatures.FirstOrDefault(s => s.Row == playerRow && s.Col == playerCol);
-        if (spawn != null)
-        {
-            CatchCreature(spawn);
-        }
-    }
-
-    private void CatchCreature(SpawnedCreature spawn)
-    {
-        score += spawn.Creature.Points;
-        if (!caughtCreatures.ContainsKey(spawn.Creature.Name))
-        {
-            caughtCreatures[spawn.Creature.Name] = spawn.Creature;
-        }
-
-        particles.Add(new Particle("★", "catch-particle", spawn.Row, spawn.Col, DateTime.UtcNow.AddMilliseconds(900)));
-        spawnedCreatures.Remove(spawn);
-    }
-
-    public void Dispose()
-    {
-        gameTimer?.Dispose();
-        spawnTimer?.Dispose();
+        activeTab = tab;
+        tabKey++;
     }
 }
