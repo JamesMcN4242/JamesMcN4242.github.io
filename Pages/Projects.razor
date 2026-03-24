@@ -58,7 +58,11 @@
                     </aside>
                 </div>
 
-                @if (project.Id == "particle-universe")
+                @if (project.Id == "play")
+                {
+                    <PortfolioSite.Pages.Play Embedded="true" />
+                }
+                else if (project.Id == "particle-universe")
                 {
                     <PortfolioSite.Pages.FunExperiments Embedded="true" />
                 }

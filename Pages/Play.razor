@@ -1,13 +1,19 @@
 @page "/play"
 
-<PageTitle>Play - James McNeil</PageTitle>
+@if (!Embedded)
+{
+    <PageTitle>Play - James McNeil</PageTitle>
+}
 
-<section class="play-page">
-    <div class="section-container">
-        <div class="section-header">
-            <h1>Play / AI Experiment</h1>
-            <p>Here I wanted to see if I could get AI to generate some simple games in Blazor that could be hosted via Github Pages without issue.</p>
-        </div>
+<section class="play-page @(Embedded ? "embedded" : "")">
+    <div class="@(Embedded ? "" : "section-container")">
+        @if (!Embedded)
+        {
+            <div class="section-header">
+                <h1>Play / AI Experiment</h1>
+                <p>Here I wanted to see if I could get AI to generate some simple games in Blazor that could be hosted via Github Pages without issue.</p>
+            </div>
+        }
 
         <div class="game-tabs">
             <button class="game-tab @(activeTab == 0 ? "active" : "")" @onclick="() => SwitchTab(0)">🎮 Creature Catcher</button>
@@ -33,6 +39,8 @@
 </section>
 
 @code {
+    [Parameter] public bool Embedded { get; set; }
+
     private int activeTab = 0;
     private int tabKey = 0;
 

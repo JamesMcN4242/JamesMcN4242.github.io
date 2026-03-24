@@ -177,6 +177,18 @@ public class ProjectService
         },
         new Project
         {
+            Id = "play",
+            Title = "Play / AI Experiment",
+            Summary = "A collection of mini-games built in Blazor — work in progress, best on desktop.",
+            Description = "An experiment to see if AI could generate simple games in Blazor that could be hosted via GitHub Pages. Includes three tabbed mini-games: Creature Catcher (grid-based Pokemon-style exploration), Flappy Bird (grid-based clone), and Snake (classic 20x20 grid).\n\nThis is a work in progress and doesn't fully work on mobile yet. Best experienced on a desktop browser with keyboard controls.",
+            Category = "Experiment",
+            Date = new DateTime(2025, 1, 1),
+            IsFeatured = false,
+            Technologies = new List<string> { "Blazor", "C#", "Games", "AI-Generated" },
+            Links = new List<ProjectLink>()
+        },
+        new Project
+        {
             Id = "particle-universe",
             Title = "Particle Universe",
             Summary = "Interactive particle physics demo built in Blazor with gravity, trails, and bouncing.",
