@@ -1954,6 +1954,209 @@ h1, h2, h3 {
     aspect-ratio: 1;
 }
 
+/* --- Experiments List Page --- */
+.experiments-list-page {
+    padding: 4rem 0;
+}
+
+.experiment-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.25rem;
+    margin-top: 1.5rem;
+}
+
+.experiment-card {
+    display: flex;
+    flex-direction: column;
+    padding: 1.5rem;
+    background: var(--color-bg-card);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    transition: all var(--transition-normal);
+    cursor: pointer;
+    text-decoration: none;
+    color: inherit;
+}
+
+.experiment-card:hover {
+    border-color: var(--color-border-hover);
+    background: var(--color-bg-card-hover);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.experiment-card-icon {
+    font-size: 2rem;
+    margin-bottom: 0.75rem;
+}
+
+.experiment-card h3 {
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+}
+
+.experiment-card p {
+    font-size: 0.88rem;
+    color: var(--color-text-secondary);
+    line-height: 1.5;
+    flex: 1;
+    margin-bottom: 0.75rem;
+}
+
+.experiment-card-tags {
+    display: flex;
+    gap: 0.35rem;
+    flex-wrap: wrap;
+}
+
+/* --- Text Compare --- */
+.compare-inputs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.compare-input-col {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.compare-label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--color-text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.compare-textarea {
+    width: 100%;
+    min-height: 200px;
+    padding: 0.75rem 1rem;
+    background: var(--color-bg-secondary);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    color: var(--color-text);
+    font-family: 'Consolas', 'Monaco', monospace;
+    font-size: 0.85rem;
+    line-height: 1.6;
+    resize: vertical;
+    outline: none;
+    transition: border-color var(--transition-fast);
+}
+
+.compare-textarea:focus {
+    border-color: var(--color-primary);
+}
+
+.compare-actions {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.compare-stats {
+    display: flex;
+    gap: 1rem;
+    font-size: 0.82rem;
+    font-weight: 600;
+    margin-left: auto;
+}
+
+.stat-added { color: #34d399; }
+.stat-removed { color: #f87171; }
+.stat-unchanged { color: var(--color-text-muted); }
+
+.compare-output {
+    background: var(--color-bg-card);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+}
+
+.compare-output-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.6rem 1rem;
+    background: var(--color-bg-secondary);
+    border-bottom: 1px solid var(--color-border);
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--color-text-secondary);
+}
+
+.compare-legend {
+    display: flex;
+    gap: 1rem;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+}
+
+.legend-color {
+    width: 12px;
+    height: 12px;
+    border-radius: 2px;
+}
+
+.legend-added { background: rgba(52, 211, 153, 0.2); border: 1px solid rgba(52, 211, 153, 0.4); }
+.legend-removed { background: rgba(248, 113, 113, 0.2); border: 1px solid rgba(248, 113, 113, 0.4); }
+
+.compare-diff {
+    padding: 0.5rem 0;
+    font-family: 'Consolas', 'Monaco', monospace;
+    font-size: 0.82rem;
+    line-height: 1.7;
+    max-height: 500px;
+    overflow-y: auto;
+}
+
+.diff-line {
+    display: flex;
+    padding: 0 1rem;
+}
+
+.diff-marker {
+    width: 1.5rem;
+    flex-shrink: 0;
+    text-align: center;
+    font-weight: 700;
+    user-select: none;
+}
+
+.diff-text {
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+.diff-unchanged {
+    color: var(--color-text-secondary);
+}
+
+.diff-added {
+    background: rgba(52, 211, 153, 0.1);
+    color: #34d399;
+}
+
+.diff-added .diff-marker { color: #34d399; }
+
+.diff-removed {
+    background: rgba(248, 113, 113, 0.1);
+    color: #f87171;
+}
+
+.diff-removed .diff-marker { color: #f87171; }
+
 /* --- Not Found --- */
 .not-found {
     display: flex;
@@ -2192,6 +2395,10 @@ h1, h2, h3 {
 
     .particle-canvas {
         height: 350px;
+    }
+
+    .compare-inputs {
+        grid-template-columns: 1fr;
     }
 
     .experiment-controls {
