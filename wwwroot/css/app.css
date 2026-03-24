@@ -2111,6 +2111,7 @@ h1, h2, h3 {
 
 .legend-added { background: rgba(52, 211, 153, 0.2); border: 1px solid rgba(52, 211, 153, 0.4); }
 .legend-removed { background: rgba(248, 113, 113, 0.2); border: 1px solid rgba(248, 113, 113, 0.4); }
+.legend-changed { background: rgba(251, 191, 36, 0.2); border: 1px solid rgba(251, 191, 36, 0.4); }
 
 .compare-diff {
     padding: 0.5rem 0;
@@ -2156,6 +2157,34 @@ h1, h2, h3 {
 }
 
 .diff-removed .diff-marker { color: #f87171; }
+
+.diff-changed-removed {
+    background: rgba(248, 113, 113, 0.05);
+    color: var(--color-text-secondary);
+}
+
+.diff-changed-removed .diff-marker { color: #f87171; }
+
+.diff-changed-added {
+    background: rgba(52, 211, 153, 0.05);
+    color: var(--color-text-secondary);
+}
+
+.diff-changed-added .diff-marker { color: #34d399; }
+
+.word-removed {
+    background: rgba(248, 113, 113, 0.3);
+    color: #f87171;
+    border-radius: 2px;
+    padding: 0 1px;
+}
+
+.word-added {
+    background: rgba(52, 211, 153, 0.3);
+    color: #34d399;
+    border-radius: 2px;
+    padding: 0 1px;
+}
 
 /* --- Not Found --- */
 .not-found {
