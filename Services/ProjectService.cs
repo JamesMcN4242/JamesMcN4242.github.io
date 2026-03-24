@@ -174,6 +174,51 @@ public class ProjectService
             IsFeatured = false,
             Technologies = new List<string> { "C#", "Unity", "Game Jam" },
             Links = new List<ProjectLink>()
+        },
+        new Project
+        {
+            Id = "particle-universe",
+            Title = "Particle Universe",
+            Summary = "Interactive particle physics demo built in Blazor with gravity, trails, and bouncing.",
+            Description = "An interactive particle simulation built entirely in Blazor WebAssembly. Click or touch anywhere on the canvas to spawn colorful particles that respond to gravity, bounce off walls, and leave trails.\n\nFeatures adjustable gravity strength, spawn count, and trail length. Particles have randomized colors, sizes, velocities, and lifespans. The simulation supports up to 500 particles with real-time FPS tracking.\n\nBuilt to test the limits of Blazor's rendering performance for real-time interactive content without any JavaScript canvas — all rendering is done via CSS-positioned div elements.",
+            Category = "Experiment",
+            Date = new DateTime(2025, 1, 1),
+            IsFeatured = false,
+            Technologies = new List<string> { "Blazor", "C#", "CSS", "Physics", "Interactive" },
+            Links = new List<ProjectLink>
+            {
+                new() { Label = "Try it", Url = "/funExperiments" }
+            }
+        },
+        new Project
+        {
+            Id = "shaderlab",
+            Title = "ShaderLab",
+            Summary = "Write math expressions to generate animated pixel art with a custom expression parser.",
+            Description = "A creative coding tool built in Blazor that lets you write mathematical expressions for R, G, and B color channels using variables x, y, and t (time) to generate animated pixel art.\n\nFeatures a custom recursive-descent expression parser supporting trigonometric functions (sin, cos, tan), math operations (abs, sqrt, floor, ceil, min, max, pow, mod, fract, step, clamp, smoothstep), ternary expressions, and comparisons.\n\nIncludes 7 built-in presets (Plasma, Rings, Checkers, Gradient, Waves, Fire, Matrix), adjustable resolution from 16x16 to 64x64, and animation speed control.",
+            Category = "Experiment",
+            Date = new DateTime(2025, 1, 1),
+            IsFeatured = false,
+            Technologies = new List<string> { "Blazor", "C#", "Parsing", "Math", "Visual" },
+            Links = new List<ProjectLink>
+            {
+                new() { Label = "Try it", Url = "/shaderLabExp" }
+            }
+        },
+        new Project
+        {
+            Id = "text-compare",
+            Title = "Text Compare",
+            Summary = "A text diff comparison tool with word-level highlighting built in Blazor.",
+            Description = "A side-by-side text comparison tool that uses a Longest Common Subsequence (LCS) algorithm to compute line-level differences between two pieces of text.\n\nWhen consecutive removed and added lines are detected, they're paired and diffed at the word level — highlighting individual changed words rather than entire lines. This makes it easy to spot small changes within large blocks of text.\n\nBuilt entirely in Blazor with no external dependencies.",
+            Category = "Experiment",
+            Date = new DateTime(2025, 1, 1),
+            IsFeatured = false,
+            Technologies = new List<string> { "Blazor", "C#", "Diff", "LCS Algorithm" },
+            Links = new List<ProjectLink>
+            {
+                new() { Label = "Try it", Url = "/text-compare" }
+            }
         }
     };
 
