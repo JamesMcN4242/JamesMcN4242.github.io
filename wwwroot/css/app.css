@@ -1965,6 +1965,20 @@ h1, h2, h3 {
     .categories-section {
         padding: 4rem 0;
     }
+
+    .snake-field,
+    .flappy-field,
+    .game-field-grid {
+        max-width: 100%;
+    }
+
+    .game-tabs {
+        flex-direction: column;
+    }
+
+    .game-tab {
+        min-width: unset;
+    }
 }
 
 @media (max-width: 480px) {
@@ -2000,5 +2014,13 @@ h1, h2, h3 {
     .filter-btn {
         padding: 0.4rem 0.85rem;
         font-size: 0.8rem;
+    }
+
+    .game-tab-content {
+        min-height: 300px;
+    }
+
+    .grid-cell {
+        font-size: 0.9rem;
     }
 }

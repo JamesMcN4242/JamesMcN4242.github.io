@@ -8,6 +8,18 @@ public class ProjectService
     {
         new Project
         {
+            Id = "simcorp-gain-dmc",
+            Title = "SimCorp Gain / Data Management Core",
+            Summary = "Working on the Data Management Core product within SimCorp Gain, an investment management platform.",
+            Description = "At SimCorp I work on the Data Management Core (DMC) product, part of the SimCorp Gain investment management platform. DMC is responsible for managing and distributing financial data across the platform, serving as the central data backbone for portfolio management, risk analysis, and reporting.\n\nMy work involves full-stack development across the product, working with a modern tech stack to build and maintain features that handle large volumes of financial data. The role requires close collaboration with other teams across the organisation to ensure data consistency and reliability throughout the platform.\n\nThis has been a fantastic opportunity to work in the fintech space, applying my generalist programming skills to complex domain problems in financial services.",
+            Category = "Industry",
+            Date = new DateTime(2024, 1, 1),
+            IsFeatured = true,
+            Technologies = new List<string> { "C#", "TypeScript", "Angular", "SQL", "Azure", "Oracle", "Snowflake" },
+            Links = new List<ProjectLink>()
+        },
+        new Project
+        {
             Id = "csr-racing-2",
             Title = "CSR Racing 2",
             Summary = "Working as part of a multi studio team to provide live updates to CSR Racing 2.",
