@@ -1,7 +1,7 @@
 {
   "mainAssemblyName": "PortfolioSite",
   "resources": {
-    "hash": "sha256-0BF9YsG1Gp9Q4T53cRuZnnKlJfDGYTENAWaSzB+KBL8=",
+    "hash": "sha256-vxAU7KzRciBPuT9ML4h2toEk+vCO5mHyLVqDJEeK3pE=",
     "jsModuleNative": {
       "dotnet.native.js": "sha256-NljIbpK/1KCj0+knpX8U77Rbl5kTtfFIuFjK7AuczEw="
     },
@@ -18,8 +18,8 @@
     },
     "coreAssembly": {},
     "assembly": {
-      "Microsoft.AspNetCore.Components.wasm": "sha256-WDyIFqsCcSdvw1KBhPk6CWNTozjw2TPCyMEskKNc4QA=",
-      "Microsoft.AspNetCore.Components.Web.wasm": "sha256-ew15ZcHP+2kiGTFgOpRoQViQZZDpEfiYHJw4WoLjU7Y=",
+      "Microsoft.AspNetCore.Components.wasm": "sha256-9+iWpTwv+sqDjFOJXDgqjbidSQzbilX/NQ38cfrkOwQ=",
+      "Microsoft.AspNetCore.Components.Web.wasm": "sha256-zafdsXGzP7X7/lFYzb23clbv719CbxkRb7J1RLYtW9Q=",
       "Microsoft.AspNetCore.Components.WebAssembly.wasm": "sha256-HkY/ueMntnr2loHI/qQbYwrBnVrVrWLVE9P3W1+4GHo=",
       "Microsoft.Extensions.Configuration.wasm": "sha256-od574rRtVVRJj+24jbl8j3GdQFpxlJOpSx+pEMw1Q18=",
       "Microsoft.Extensions.Configuration.Abstractions.wasm": "sha256-XR+WUfg8LtnrwdXFBnV+qO3ROyp6cYCfl1AZajIAheM=",
@@ -42,12 +42,12 @@
       "System.Net.Primitives.wasm": "sha256-h7OMygXcLfv3yS7oYcfmRdLJJUVN7MbIBGVZOuOvonM=",
       "System.Private.Uri.wasm": "sha256-uAmLYKQU3uJzUL+ylysXBSahZji2f/9/v9VcqrDxEyU=",
       "System.Runtime.InteropServices.JavaScript.wasm": "sha256-6hdGkh80Le78a9cg0/X1jE6bN7MJcXfdZhyjTFvqx4M=",
-      "System.Runtime.wasm": "sha256-k9QhQRnIHoTSHHO7osAP84X1bTZzYyWcEqcvnLdPjUM=",
+      "System.Runtime.wasm": "sha256-VCuaP05apL8dkRH5Y8FuoYrb7c9sdxRCojkLOwYMHUo=",
       "System.Text.Encodings.Web.wasm": "sha256-QlEAY71V5tn3FS4QI+N/MDAf43l3aWX0SFMMJbfw3C8=",
       "System.Text.Json.wasm": "sha256-1KgIAMAl2smt63FtxqMONS0r7ox8LJZ7eD4HpHMyFeQ=",
       "System.Text.RegularExpressions.wasm": "sha256-nE7XCiyeCswUnRGdXOQvcHP+XMWXcToACrazpZlocBI=",
-      "System.Private.CoreLib.wasm": "sha256-yxiXmYHxaguZ2Hl/CdP7riFOzcuKOnBJNMBgnjTJb9U=",
-      "PortfolioSite.wasm": "sha256-J0uKgElx9cKfsNhpWP44bpMo0uegQzH3w4Qzmml1q+4="
+      "System.Private.CoreLib.wasm": "sha256-+Cl9aYPVSnOSrIidGwyEMl9LRTOyqD41VkWw7Wuk5tk=",
+      "PortfolioSite.wasm": "sha256-gl5+ral96/+0uhzVHhWKSXwHDYRkk1LeJBVJEpF7YfM="
     }
   },
   "cacheBootResources": true,
