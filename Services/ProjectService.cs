@@ -180,7 +180,7 @@ public class ProjectService
             Id = "play",
             Title = "Play / AI Experiment",
             Summary = "A collection of mini-games built in Blazor — work in progress, best on desktop.",
-            Description = "An experiment to see if AI could generate simple games in Blazor that could be hosted via GitHub Pages. Includes three tabbed mini-games: Creature Catcher (grid-based Pokemon-style exploration), Flappy Bird (grid-based clone), and Snake (classic 20x20 grid).\n\nThis is a work in progress and doesn't fully work on mobile yet. Best experienced on a desktop browser with keyboard controls.",
+            Description = "An experiment to see if AI could generate simple games in Blazor that could be hosted via GitHub Pages. Includes three tabbed mini-games: Creature Catcher (grid-based creature-collection exploration), Floppy Bird (grid-based clone), and Snake (classic 20x20 grid).\n\nThis is a work in progress and doesn't fully work on mobile yet. Best experienced on a desktop browser with keyboard controls.",
             Category = "AI Experiments",
             Date = new DateTime(2026, 3, 1),
             IsFeatured = false,

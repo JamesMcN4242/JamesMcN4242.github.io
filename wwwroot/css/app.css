@@ -1637,8 +1637,8 @@ h1, h2, h3 {
     color: var(--color-text);
 }
 
-/* --- Flappy Bird Game --- */
-/* --- Flappy Bird Grid Game --- */
+/* --- Floppy Bird Game --- */
+/* --- Floppy Bird Grid Game --- */
 .flappy-field {
     display: grid;
     grid-template-columns: repeat(15, 1fr);
