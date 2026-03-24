@@ -182,7 +182,7 @@ public class ProjectService
             Summary = "A collection of mini-games built in Blazor — work in progress, best on desktop.",
             Description = "An experiment to see if AI could generate simple games in Blazor that could be hosted via GitHub Pages. Includes three tabbed mini-games: Creature Catcher (grid-based Pokemon-style exploration), Flappy Bird (grid-based clone), and Snake (classic 20x20 grid).\n\nThis is a work in progress and doesn't fully work on mobile yet. Best experienced on a desktop browser with keyboard controls.",
             Category = "AI Experiments",
-            Date = new DateTime(2025, 1, 1),
+            Date = new DateTime(2026, 3, 1),
             IsFeatured = false,
             Technologies = new List<string> { "Blazor", "C#", "Games", "AI-Generated" },
             Links = new List<ProjectLink>()
@@ -194,7 +194,7 @@ public class ProjectService
             Summary = "Interactive particle physics demo built in Blazor with gravity, trails, and bouncing.",
             Description = "An interactive particle simulation built entirely in Blazor WebAssembly. Click or touch anywhere on the canvas to spawn colorful particles that respond to gravity, bounce off walls, and leave trails.\n\nFeatures adjustable gravity strength, spawn count, and trail length. Particles have randomized colors, sizes, velocities, and lifespans. The simulation supports up to 500 particles with real-time FPS tracking.\n\nBuilt to test the limits of Blazor's rendering performance for real-time interactive content without any JavaScript canvas — all rendering is done via CSS-positioned div elements.",
             Category = "AI Experiments",
-            Date = new DateTime(2025, 1, 1),
+            Date = new DateTime(2026, 3, 1),
             IsFeatured = false,
             Technologies = new List<string> { "Blazor", "C#", "CSS", "Physics", "AI-Generated" },
             Links = new List<ProjectLink>()
@@ -206,7 +206,7 @@ public class ProjectService
             Summary = "Write math expressions to generate animated pixel art with a custom expression parser.",
             Description = "A creative coding tool built in Blazor that lets you write mathematical expressions for R, G, and B color channels using variables x, y, and t (time) to generate animated pixel art.\n\nFeatures a custom recursive-descent expression parser supporting trigonometric functions (sin, cos, tan), math operations (abs, sqrt, floor, ceil, min, max, pow, mod, fract, step, clamp, smoothstep), ternary expressions, and comparisons.\n\nIncludes 7 built-in presets (Plasma, Rings, Checkers, Gradient, Waves, Fire, Matrix), adjustable resolution from 16x16 to 64x64, and animation speed control.",
             Category = "AI Experiments",
-            Date = new DateTime(2025, 1, 1),
+            Date = new DateTime(2026, 3, 1),
             IsFeatured = false,
             Technologies = new List<string> { "Blazor", "C#", "Parsing", "Math", "AI-Generated" },
             Links = new List<ProjectLink>()
@@ -218,7 +218,7 @@ public class ProjectService
             Summary = "A text diff comparison tool with word-level highlighting built in Blazor.",
             Description = "A side-by-side text comparison tool that uses a Longest Common Subsequence (LCS) algorithm to compute line-level differences between two pieces of text.\n\nWhen consecutive removed and added lines are detected, they're paired and diffed at the word level — highlighting individual changed words rather than entire lines. This makes it easy to spot small changes within large blocks of text.\n\nBuilt entirely in Blazor with no external dependencies.",
             Category = "AI Experiments",
-            Date = new DateTime(2025, 1, 1),
+            Date = new DateTime(2026, 3, 1),
             IsFeatured = false,
             Technologies = new List<string> { "Blazor", "C#", "Diff", "AI-Generated" },
             Links = new List<ProjectLink>()
