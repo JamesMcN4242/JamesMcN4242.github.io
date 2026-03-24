@@ -83,6 +83,12 @@
                 <p>Fast-paced creations built in tight time constraints</p>
                 <span class="category-count">@ProjectService.GetProjectsByCategory("Game Jam").Count projects</span>
             </a>
+            <a href="projects?category=AI Experiments" class="category-card">
+                <div class="category-icon">&#129302;</div>
+                <h3>AI Experiments</h3>
+                <p>Projects built with AI tools exclusively</p>
+                <span class="category-count">@ProjectService.GetProjectsByCategory("AI Experiments").Count projects</span>
+            </a>
         </div>
     </div>
 </section>
