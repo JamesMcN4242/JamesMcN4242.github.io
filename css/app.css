@@ -1053,16 +1053,12 @@ h1, h2, h3 {
     pointer-events: none;
 }
 
-.terrain-rock {
-    background: #1e1e28;
+.terrain-tree {
+    background: #15201a;
 }
 
-.terrain-rock::after {
-    content: '▪';
-    position: absolute;
-    color: rgba(255, 255, 255, 0.06);
-    font-size: 0.6rem;
-    pointer-events: none;
+.terrain-void {
+    background: #080810;
 }
 
 /* Player */
@@ -1075,6 +1071,11 @@ h1, h2, h3 {
     font-size: 1.3rem;
     z-index: 2;
     animation: playerBob 1.5s ease-in-out infinite;
+}
+
+.tree-sprite {
+    font-size: 1.3rem;
+    z-index: 1;
 }
 
 @keyframes playerBob {
@@ -1233,6 +1234,10 @@ h1, h2, h3 {
 
 .minimap-creature {
     background: var(--color-text-muted) !important;
+}
+
+.minimap-tree {
+    background: #1a3a1a !important;
 }
 
 .minimap-common {
