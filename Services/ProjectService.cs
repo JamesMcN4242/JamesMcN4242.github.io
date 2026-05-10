@@ -10,12 +10,12 @@ public class ProjectService
         {
             Id = "simcorp-gain-dmc",
             Title = "SimCorp Gain / Data Management Core",
-            Summary = "Working on the Data Management Core product within SimCorp Gain, an investment management platform.",
-            Description = "At SimCorp I work on the Data Management Core (DMC) product, part of the SimCorp Gain investment management platform. DMC is responsible for managing and distributing financial data across the platform, serving as the central data backbone for portfolio management, risk analysis, and reporting.\n\nMy work involves full-stack development across the product, working with a modern tech stack to build and maintain features that handle large volumes of financial data. The role requires close collaboration with other teams across the organisation to ensure data consistency and reliability throughout the platform.\n\nA highlight of my time here has been identifying opportunities to optimise our cloud infrastructure for the cloud offering. Through discovering inefficiencies, managing the initiative, and implementing architectural changes, I helped reduce production costs by 25% — all while maintaining the high performance and reliability our clients depend on.\n\nThis has been a fantastic opportunity to work in the fintech space, applying my generalist programming skills to complex domain problems in financial services.",
+            Summary = "Working on SimCorp's Data Management Core product, both on premise and cloud offering.",
+            Description = "At SimCorp I work on the Data Management Core (DMC) product. DMC is responsible for managing, correcting and distributing financial data across the platform, serving as a central data backbone for other products, or as a standalone offering.\n\nMy work involves full-stack development across the product, working with both a legacy .NET product, and a more modern tech stack to build and maintain features that handle large volumes of financial data. The role requires close collaboration with other teams across the organisation to ensure data consistency and reliability throughout the platform.\n\nA highlight of my time here has been identifying opportunities to optimise our cloud infrastructure for the cloud offering. Through discovering inefficiencies, managing the initiative, and implementing architectural changes, I helped reduce our Azure production costs by over 25% — all while maintaining the high performance and reliability our clients depend on.\n\nThis has been a fantastic opportunity to work in the fintech space, applying my generalist programming skills to complex domain problems in financial services.",
             Category = "Industry",
-            Date = new DateTime(2024, 1, 1),
+            Date = new DateTime(2026, 1, 1),
             IsFeatured = true,
-            Technologies = new List<string> { "C#", "TypeScript", "Angular", "SQL", "Azure", "Oracle", "Snowflake" },
+            Technologies = new List<string> { "C#", "TypeScript", "Angular", "SQL", "Azure", "Oracle", "Snowflake", "MongoDB" },
             Links = new List<ProjectLink>()
         },
         new Project
@@ -38,17 +38,13 @@ public class ProjectService
         {
             Id = "pocket-mortys-live-ops",
             Title = "Pocket Mortys Live Ops",
-            Summary = "Assisting in providing updates to the Pocket Mortys game, including the creation of raid events.",
-            Description = "In preparation for Season 4 of Rick and Morty a number of updates were created to pique interest in the Pocket Morty game. Including general quality of life improvements, SDK updates and collaborating in the creation of raid events.\n\nWorking as part of a team to supply these updates to a large user base has been a great development opportunity. It allowed me to work with a large variety of languages including C#, Objective-C, JavaScript and SQL.\n\nThe raid event that recently ran for the first time was the biggest technological challenge I've had the pleasure of working on within my time in the games industry.",
+            Summary = "Providing updates to the Pocket Mortys game, including the creation of an MMO style raid events system.",
+            Description = "In preparation for Season 4 of Rick and Morty a number of updates were created to pique interest in the Pocket Morty game. Including general quality of life improvements, SDK updates and collaborating in the creation of raid events.\n\nWorking as part of a team to supply these updates to a large user base has been a great development opportunity. It allowed me to work with a large variety of languages including C#, Objective-C, JavaScript and SQL.\n\nThe raid event that recently ran for the first time was the biggest technological challenge I've had the pleasure of working on within my time in the games industry.\n\nUnfortunately the game has been taken down from the AppStore as of early 2026 💔",
             Category = "Industry",
             Date = new DateTime(2019, 10, 23),
             IsFeatured = true,
             Technologies = new List<string> { "C#", "Objective-C", "JavaScript", "SQL", "Unity" },
-            Links = new List<ProjectLink>
-            {
-                new() { Label = "iOS", Url = "https://apps.apple.com/us/app/rick-and-morty-pocket-mortys/id992640880" },
-                new() { Label = "Android", Url = "https://play.google.com/store/apps/details?id=com.turner.pocketmorties" }
-            }
+            Links = new List<ProjectLink>()
         },
         new Project
         {
@@ -62,8 +58,7 @@ public class ProjectService
             Technologies = new List<string> { "Mobile Development", "Push Notifications", "Leaderboards", "Unity" },
             Links = new List<ProjectLink>
             {
-                new() { Label = "iOS", Url = "https://apps.apple.com/gb/app/raith-rovers-matchday-app/id1421285626" },
-                new() { Label = "Android", Url = "https://play.google.com/store/apps/details?id=com.taggames.raithrovers" }
+                new() { Label = "Release Video", Url = "https://www.raithrovers.net/raith-tv/31352/" }
             }
         },
         new Project
@@ -105,7 +100,6 @@ public class ProjectService
             Technologies = new List<string> { "C#", "Unity", "WebGL" },
             Links = new List<ProjectLink>
             {
-                new() { Label = "Play on Simmer.io", Url = "https://simmer.io/@JamesMcN42/cambusbarron-egg-hunt" },
                 new() { Label = "GitHub", Url = "https://github.com/JamesMcN4242/EasterEggHunt" }
             }
         },
@@ -143,10 +137,7 @@ public class ProjectService
             Date = new DateTime(2018, 1, 14),
             IsFeatured = false,
             Technologies = new List<string> { "C#", "Unity", "Educational Games", "Android" },
-            Links = new List<ProjectLink>
-            {
-                new() { Label = "Download", Url = "https://drive.google.com/open?id=1wtKTD2xyhfXE1sIUUwSOseiBs9Qe2ScX" }
-            }
+            Links = new List<ProjectLink>()
         },
         new Project
         {
@@ -158,10 +149,7 @@ public class ProjectService
             Date = new DateTime(2018, 2, 3),
             IsFeatured = false,
             Technologies = new List<string> { "C#", "Unity", "Game Jam", "Android" },
-            Links = new List<ProjectLink>
-            {
-                new() { Label = "Download", Url = "https://drive.google.com/open?id=1Go7eux9KoVeP-eQvMIRzogPKwI-fAkjB" }
-            }
+            Links = new List<ProjectLink>()
         },
         new Project
         {
