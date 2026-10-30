@@ -1,5 +1,5 @@
 {
-  "version": 3,
+  "version": 4,
   "targets": {
     "net8.0": {
       "Microsoft.AspNetCore.Authorization/8.0.8": {
@@ -422,13 +422,13 @@
           }
         }
       },
-      "Microsoft.NET.ILLink.Tasks/8.0.22": {
+      "Microsoft.NET.ILLink.Tasks/8.0.30": {
         "type": "package",
         "build": {
           "build/Microsoft.NET.ILLink.Tasks.props": {}
         }
       },
-      "Microsoft.NET.Sdk.WebAssembly.Pack/10.0.1": {
+      "Microsoft.NET.Sdk.WebAssembly.Pack/10.0.11": {
         "type": "package",
         "build": {
           "build/Microsoft.NET.Sdk.WebAssembly.Pack.props": {},
@@ -914,13 +914,13 @@
           }
         }
       },
-      "Microsoft.NET.ILLink.Tasks/8.0.22": {
+      "Microsoft.NET.ILLink.Tasks/8.0.30": {
         "type": "package",
         "build": {
           "build/Microsoft.NET.ILLink.Tasks.props": {}
         }
       },
-      "Microsoft.NET.Sdk.WebAssembly.Pack/10.0.1": {
+      "Microsoft.NET.Sdk.WebAssembly.Pack/10.0.11": {
         "type": "package",
         "build": {
           "build/Microsoft.NET.Sdk.WebAssembly.Pack.props": {},
@@ -1791,10 +1791,10 @@
         "microsoft.jsinterop.webassembly.nuspec"
       ]
     },
-    "Microsoft.NET.ILLink.Tasks/8.0.22": {
-      "sha512": "MhcMithKEiyyNkD2ZfbDZPmcOdi0GheGfg8saEIIEfD/fol3iHmcV8TsZkD4ZYz5gdUuoX4YtlVySUU7Sxl9SQ==",
+    "Microsoft.NET.ILLink.Tasks/8.0.30": {
+      "sha512": "SfmwuZjUPBTEoBMAsXZ/hWkaEK9oL+Y/UtAx7N6RyWHfcMt9J0ExrNPuOgTyPbCXIyiTBFsxFNrPLEZNPmJcvA==",
       "type": "package",
-      "path": "microsoft.net.illink.tasks/8.0.22",
+      "path": "microsoft.net.illink.tasks/8.0.30",
       "hasTools": true,
       "files": [
         ".nupkg.metadata",
@@ -1808,7 +1808,7 @@
         "build/Microsoft.NET.ILLink.Analyzers.props",
         "build/Microsoft.NET.ILLink.Tasks.props",
         "build/Microsoft.NET.ILLink.targets",
-        "microsoft.net.illink.tasks.8.0.22.nupkg.sha512",
+        "microsoft.net.illink.tasks.8.0.30.nupkg.sha512",
         "microsoft.net.illink.tasks.nuspec",
         "tools/net472/ILLink.Tasks.dll",
         "tools/net472/ILLink.Tasks.dll.config",
@@ -1842,10 +1842,10 @@
         "useSharedDesignerContext.txt"
       ]
     },
-    "Microsoft.NET.Sdk.WebAssembly.Pack/10.0.1": {
-      "sha512": "8XSP0Wu0xpj3xr88WwW43GiklXXiM27n6V8CXk35wT1MjxCfmudQJYmLbirWiPiqU1vCIWTIczPpI40ivC3ruQ==",
+    "Microsoft.NET.Sdk.WebAssembly.Pack/10.0.11": {
+      "sha512": "qTQsflEOjG1xG8FCfQJZbVd7DErJdKqKoW4gxH1HlgGQ5IBBloehLvXhMhzYqogYyajU7YEUKZvJ4n/vA7sAmQ==",
       "type": "package",
-      "path": "microsoft.net.sdk.webassembly.pack/10.0.1",
+      "path": "microsoft.net.sdk.webassembly.pack/10.0.11",
       "hasTools": true,
       "files": [
         ".nupkg.metadata",
@@ -1875,7 +1875,7 @@
         "build/Microsoft.NET.Sdk.WebAssembly.Pack.targets",
         "build/Wasm.web.config",
         "build/browser.runtimeconfig.template.json",
-        "microsoft.net.sdk.webassembly.pack.10.0.1.nupkg.sha512",
+        "microsoft.net.sdk.webassembly.pack.10.0.11.nupkg.sha512",
         "microsoft.net.sdk.webassembly.pack.nuspec",
         "tools/net10.0/Microsoft.NET.Sdk.WebAssembly.Pack.Tasks.dll",
         "tools/net10.0/Microsoft.NET.WebAssembly.Webcil.dll",
@@ -2025,8 +2025,8 @@
     "net8.0": [
       "Microsoft.AspNetCore.Components.WebAssembly >= 8.0.8",
       "Microsoft.AspNetCore.Components.WebAssembly.DevServer >= 8.0.8",
-      "Microsoft.NET.ILLink.Tasks >= 8.0.22",
-      "Microsoft.NET.Sdk.WebAssembly.Pack >= 10.0.1"
+      "Microsoft.NET.ILLink.Tasks >= 8.0.30",
+      "Microsoft.NET.Sdk.WebAssembly.Pack >= 10.0.11"
     ]
   },
   "packageFolders": {
@@ -2036,11 +2036,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\repos\\portfolio-github-pages\\PortfolioSite.csproj",
+      "projectUniqueName": "C:\\repos\\PortfolioSite\\PortfolioSite.csproj",
       "projectName": "PortfolioSite",
-      "projectPath": "C:\\repos\\portfolio-github-pages\\PortfolioSite.csproj",
+      "projectPath": "C:\\repos\\PortfolioSite\\PortfolioSite.csproj",
       "packagesPath": "C:\\Users\\JSML\\.nuget\\packages\\",
-      "outputPath": "C:\\repos\\portfolio-github-pages\\obj\\",
+      "outputPath": "C:\\repos\\PortfolioSite\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -2061,6 +2061,7 @@
       },
       "frameworks": {
         "net8.0": {
+          "framework": "net8.0",
           "targetAlias": "net8.0",
           "projectReferences": {}
         }
@@ -2075,10 +2076,11 @@
         "auditLevel": "low",
         "auditMode": "direct"
       },
-      "SdkAnalysisLevel": "10.0.100"
+      "SdkAnalysisLevel": "10.0.400"
     },
     "frameworks": {
       "net8.0": {
+        "framework": "net8.0",
         "targetAlias": "net8.0",
         "dependencies": {
           "Microsoft.AspNetCore.Components.WebAssembly": {
@@ -2093,13 +2095,13 @@
           "Microsoft.NET.ILLink.Tasks": {
             "suppressParent": "All",
             "target": "Package",
-            "version": "[8.0.22, )",
+            "version": "[8.0.30, )",
             "autoReferenced": true
           },
           "Microsoft.NET.Sdk.WebAssembly.Pack": {
             "suppressParent": "All",
             "target": "Package",
-            "version": "[10.0.1, )",
+            "version": "[10.0.11, )",
             "autoReferenced": true
           }
         },
@@ -2117,7 +2119,7 @@
         "downloadDependencies": [
           {
             "name": "Microsoft.NETCore.App.Runtime.Mono.browser-wasm",
-            "version": "[8.0.22, 8.0.22]"
+            "version": "[8.0.30, 8.0.30]"
           }
         ],
         "frameworkReferences": {
@@ -2125,7 +2127,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.101/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.400/PortableRuntimeIdentifierGraph.json"
       }
     },
     "runtimes": {

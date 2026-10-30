@@ -1,0 +1,56 @@
+@using System.Text.Json
+
+<div class="utility-tool">
+    <div class="compare-inputs">
+        <div class="compare-input-col">
+            <label class="compare-label" for="json-input">JSON input</label>
+            <textarea id="json-input" class="compare-textarea" @bind="input" @bind:event="oninput"
+                      spellcheck="false" autocomplete="off" placeholder="Paste JSON here..."></textarea>
+        </div>
+        <div class="compare-input-col">
+            <label class="compare-label" for="json-output">JSON result</label>
+            <textarea id="json-output" class="compare-textarea" value="@output" readonly
+                      spellcheck="false" placeholder="Formatted or condensed JSON appears here"></textarea>
+        </div>
+    </div>
+    <div class="compare-actions">
+        <button class="btn btn-primary" @onclick="() => Format(true)">Prettify</button>
+        <button class="btn btn-secondary" @onclick="() => Format(false)">Condense</button>
+        <button class="btn btn-secondary" @onclick="Clear">Clear</button>
+    </div>
+    @if (error != null)
+    {
+        <p class="utility-error" role="alert">@error</p>
+    }
+    <p class="utility-help" role="status">@status</p>
+    <p class="utility-help">Strict JSON: comments and trailing commas are rejected. Numbers retain their precision; keys are not sorted. Select the result to copy it.</p>
+</div>
+
+@code {
+    private string input = "";
+    private string output = "";
+    private string? error;
+    private string status = "";
+
+    private void Format(bool indented)
+    {
+        error = null;
+        status = "";
+        output = "";
+        try
+        {
+            output = UtilityTools.FormatJson(input, indented);
+            status = indented ? "Valid JSON, formatted with two-space indentation." : "Valid JSON, condensed without unnecessary whitespace.";
+        }
+        catch (JsonException exception)
+        {
+            error = $"Invalid JSON at line {exception.LineNumber + 1}, byte {exception.BytePositionInLine + 1}. Check syntax, quotes, and nesting (maximum depth 64).";
+        }
+    }
+
+    private void Clear()
+    {
+        input = output = status = "";
+        error = null;
+    }
+}

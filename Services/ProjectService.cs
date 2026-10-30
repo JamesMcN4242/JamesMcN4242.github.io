@@ -204,11 +204,33 @@ public class ProjectService
             Id = "text-compare",
             Title = "Text Compare",
             Summary = "A text diff comparison tool with word-level highlighting built in Blazor.",
-            Description = "A side-by-side text comparison tool that uses a Longest Common Subsequence (LCS) algorithm to compute line-level differences between two pieces of text.\n\nWhen consecutive removed and added lines are detected, they're paired and diffed at the word level — highlighting individual changed words rather than entire lines. This makes it easy to spot small changes within large blocks of text.\n\nBuilt entirely in Blazor with no external dependencies.",
-            Category = "AI Experiments",
+            Description = "A local-only utility that uses a Longest Common Subsequence (LCS) algorithm to compare text line by line, with word-level highlighting for changed lines.\n\nBuilt entirely in Blazor WebAssembly with no external dependencies. Text is processed in your browser tab, not uploaded or saved by the tool.",
+            Category = "Utility",
             Date = new DateTime(2026, 3, 1),
             IsFeatured = false,
-            Technologies = new List<string> { "Blazor", "C#", "Diff", "AI-Generated" },
+            Technologies = new List<string> { "Blazor", "C#", "Diff", "Local-only" },
+            Links = new List<ProjectLink>()
+        },
+        new Project
+        {
+            Id = "json-formatter",
+            Title = "JSON Formatter",
+            Summary = "Prettify, condense, and validate JSON locally, without losing numeric precision.",
+            Description = "Format JSON with two-space indentation or condense it for compact storage. Invalid JSON is reported with its line and byte position.\n\nProcessing stays entirely in your browser. The tool preserves numeric precision and does not upload or save your input.",
+            Category = "Utility",
+            Date = new DateTime(2026, 10, 30),
+            Technologies = new List<string> { "Blazor", "C#", "JSON", "Local-only" },
+            Links = new List<ProjectLink>()
+        },
+        new Project
+        {
+            Id = "text-codec",
+            Title = "Text Encoder / Decoder",
+            Summary = "Chain Base64, Base64URL, URL, HTML, hex, and JSON string encoding or decoding steps.",
+            Description = "Build a sequence of encoding and decoding steps using dropdowns. Each step takes the previous result as its input, with optional intermediate results to inspect each layer.\n\nSupports standard Base64, Base64URL, URL-component percent encoding, HTML entities, hex, and JSON string escaping. Binary results, such as decoded keys or hashes, are shown as hex. Malformed input is reported at the failing step.\n\nAll processing is local to your browser. Encoding is not encryption.",
+            Category = "Utility",
+            Date = new DateTime(2026, 10, 30),
+            Technologies = new List<string> { "Blazor", "C#", "Encoding", "Local-only" },
             Links = new List<ProjectLink>()
         }
     };

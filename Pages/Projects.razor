@@ -58,6 +58,12 @@
                     </aside>
                 </div>
 
+                @if (project.Category == "Utility")
+                {
+                    <p><a href="utilities" class="back-link">Browse all Utility tools &rarr;</a></p>
+                    <UtilityPrivacy />
+                }
+
                 @if (project.Id == "play")
                 {
                     <PortfolioSite.Pages.Play Embedded="true" />
@@ -73,6 +79,14 @@
                 else if (project.Id == "text-compare")
                 {
                     <PortfolioSite.Pages.TextCompare Embedded="true" />
+                }
+                else if (project.Id == "json-formatter")
+                {
+                    <JsonFormatter />
+                }
+                else if (project.Id == "text-codec")
+                {
+                    <TextCodec />
                 }
             </div>
         </section>
@@ -115,7 +129,7 @@ else
             <div class="project-grid">
                 @foreach (var project in filteredProjects)
                 {
-                    <a href="projects/@project.Id" class="project-card">
+                    <a href="@(project.Category == "Utility" ? $"utilities/{project.Id}" : $"projects/{project.Id}")" class="project-card">
                         <div class="card-category">@project.Category</div>
                         <h3 class="card-title">@project.Title</h3>
                         <p class="card-summary">@project.Summary</p>

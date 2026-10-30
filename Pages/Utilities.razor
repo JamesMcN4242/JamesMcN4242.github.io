@@ -1,0 +1,70 @@
+@page "/utilities"
+@page "/utilities/{UtilityId}"
+@inject ProjectService ProjectService
+
+@{
+    var utility = UtilityId == null ? null : ProjectService.GetProjectsByCategory("Utility")
+        .FirstOrDefault(project => project.Id.Equals(UtilityId, StringComparison.OrdinalIgnoreCase));
+}
+
+<PageTitle>@(UtilityId == null ? "Utility" : utility?.Title ?? "Utility Not Found") - James McNeil</PageTitle>
+
+<section class="experiments-list-page">
+    <div class="section-container">
+        @if (UtilityId == null)
+        {
+            <div class="section-header">
+                <h1>Utility</h1>
+                <p>Useful everyday tools, without sending your data to a server.</p>
+            </div>
+            <UtilityPrivacy />
+            <div class="experiment-cards">
+                @foreach (var tool in ProjectService.GetProjectsByCategory("Utility"))
+                {
+                    <a href="utilities/@tool.Id" class="experiment-card">
+                        <div class="card-category">Utility</div>
+                        <h2>@tool.Title</h2>
+                        <p>@tool.Summary</p>
+                        <div class="experiment-card-tags">
+                            <span class="tech-tag">Browser only</span>
+                            <span class="tech-tag">No uploads</span>
+                        </div>
+                    </a>
+                }
+            </div>
+        }
+        else if (utility != null)
+        {
+            <a href="utilities" class="back-link">&larr; Back to Utility</a>
+            <div class="section-header">
+                <h1>@utility.Title</h1>
+                <p>@utility.Summary</p>
+            </div>
+            <UtilityPrivacy />
+            @switch (utility.Id)
+            {
+                case "text-compare":
+                    <TextCompare Embedded="true" />
+                    break;
+                case "json-formatter":
+                    <JsonFormatter />
+                    break;
+                case "text-codec":
+                    <TextCodec />
+                    break;
+            }
+        }
+        else
+        {
+            <div class="not-found">
+                <h1>Utility Not Found</h1>
+                <p>The utility you're looking for doesn't exist.</p>
+                <a href="utilities" class="btn btn-primary">Back to Utility</a>
+            </div>
+        }
+    </div>
+</section>
+
+@code {
+    [Parameter] public string? UtilityId { get; set; }
+}

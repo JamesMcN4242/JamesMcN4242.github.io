@@ -1,0 +1,188 @@
+@using System.Text
+@using System.Text.Json
+
+<div class="utility-tool">
+    <p class="utility-help">Build a chain of encoding or decoding steps. Steps run from top to bottom,
+        each using the previous step's result. Decoding can produce binary data (such as keys or hashes), which is shown as hex.
+        Encoding is not encryption.</p>
+    <div class="compare-inputs">
+        <div class="compare-input-col">
+            <label class="compare-label" for="codec-input">Input</label>
+            <textarea id="codec-input" class="compare-textarea" @bind="input" @bind:event="oninput" @bind:after="ClearResult"
+                      spellcheck="false" autocomplete="off" placeholder="Paste text to encode or decode..."></textarea>
+        </div>
+        <div class="compare-input-col">
+            <label class="compare-label" for="codec-output">Final result@(outputIsBinary ? " (binary, shown as hex)" : "")</label>
+            <textarea id="codec-output" class="compare-textarea" value="@output" readonly
+                      spellcheck="false" placeholder="Your converted text appears here"></textarea>
+        </div>
+    </div>
+    <fieldset class="codec-chain">
+        <legend>Encoding / decoding steps</legend>
+        @for (var index = 0; index < steps.Count; index++)
+        {
+            var stepIndex = index;
+            var step = steps[index];
+            <div class="codec-step" @key="step">
+                <label for="codec-step-@stepIndex">Step @(stepIndex + 1)</label>
+                <select id="codec-step-@stepIndex" @bind="step.Operation" @bind:after="ClearResult">
+                    @foreach (var operation in Operations)
+                    {
+                        <option value="@operation.Operation">@operation.Label</option>
+                    }
+                </select>
+                <button class="btn btn-secondary" disabled="@(steps.Count == 1)"
+                        aria-label="Remove step @(stepIndex + 1)" @onclick="() => RemoveStep(stepIndex)">Remove</button>
+            </div>
+        }
+        <button class="btn btn-secondary" @onclick="AddStep">+ Add step</button>
+    </fieldset>
+    <div class="compare-actions">
+        <button class="btn btn-primary" @onclick="RunChain">Run chain</button>
+        <button class="btn btn-secondary" @onclick="UseResult" disabled="@(!hasResult)">Use result as input</button>
+        <button class="btn btn-secondary" @onclick="Clear">Clear</button>
+    </div>
+    @if (error != null)
+    {
+        <p class="utility-error" role="alert">@error</p>
+    }
+    <p class="utility-help" role="status">@status</p>
+    @if (hasResult)
+    {
+        <details class="codec-results">
+            <summary>Show intermediate results</summary>
+            @for (var index = 0; index < stepResults.Count; index++)
+            {
+                <div class="codec-step-result">
+                    <h2>Step @(index + 1): @GetLabel(steps[index].Operation)@(stepResults[index].IsBinary ? " (binary, shown as hex)" : "")</h2>
+                    <pre>@stepResults[index].Display</pre>
+                </div>
+            }
+        </details>
+    }
+    <p class="utility-help">Text is converted to UTF-8 bytes between steps. Use Hex encode to view bytes as hex
+        and Hex decode to turn hex text back into bytes (even number of digits, no spaces).
+        Base64 and Base64URL decoding ignore whitespace and accept missing padding; Base64URL encoding omits padding.
+        URL operations encode a single component and preserve literal + signs when decoding (not form data).
+        JSON string encoding includes surrounding double quotes; decoding expects them.
+        HTML decoding leaves unrecognised entities unchanged. Decode steps and the HTML/JSON steps need text input,
+        so they report an error if the previous step produced binary data.</p>
+</div>
+
+@code {
+    private static readonly (TextCodecOperation Operation, string Label)[] Operations =
+    {
+        (TextCodecOperation.Base64Encode, "Base64 encode"),
+        (TextCodecOperation.Base64Decode, "Base64 decode"),
+        (TextCodecOperation.Base64UrlEncode, "Base64URL encode"),
+        (TextCodecOperation.Base64UrlDecode, "Base64URL decode"),
+        (TextCodecOperation.UrlEncode, "URL encode"),
+        (TextCodecOperation.UrlDecode, "URL decode"),
+        (TextCodecOperation.HtmlEncode, "HTML entity encode"),
+        (TextCodecOperation.HtmlDecode, "HTML entity decode"),
+        (TextCodecOperation.HexEncode, "Hex encode (bytes → hex)"),
+        (TextCodecOperation.HexDecode, "Hex decode (hex → bytes)"),
+        (TextCodecOperation.JsonStringEncode, "JSON string escape"),
+        (TextCodecOperation.JsonStringDecode, "JSON string unescape")
+    };
+
+    private sealed class CodecStep
+    {
+        public TextCodecOperation Operation { get; set; } = TextCodecOperation.Base64Encode;
+    }
+
+    private readonly List<CodecStep> steps = new() { new() };
+    private readonly List<(string Display, bool IsBinary)> stepResults = new();
+    private string input = "";
+    private string output = "";
+    private string? error;
+    private string status = "";
+    private bool hasResult;
+    private bool outputIsBinary;
+
+    private static string GetLabel(TextCodecOperation operation) =>
+        Operations.First(option => option.Operation == operation).Label;
+
+    private void RunChain()
+    {
+        ClearResult();
+        byte[] current;
+        try
+        {
+            current = UtilityTools.TextToBytes(input);
+        }
+        catch (EncoderFallbackException)
+        {
+            error = "The input contains invalid Unicode characters.";
+            return;
+        }
+
+        var results = new List<(string Display, bool IsBinary)>();
+        for (var index = 0; index < steps.Count; index++)
+        {
+            var operation = steps[index].Operation;
+            try
+            {
+                current = UtilityTools.Transform(current, operation);
+                var display = UtilityTools.ToDisplayText(current, out var isBinary);
+                results.Add((display, isBinary));
+            }
+            catch (FormatException exception)
+            {
+                error = $"Step {index + 1} ({GetLabel(operation)}): {exception.Message}";
+                return;
+            }
+            catch (JsonException)
+            {
+                error = $"Step {index + 1} ({GetLabel(operation)}): Invalid JSON string. Include surrounding double quotes and escape special characters.";
+                return;
+            }
+            catch (EncoderFallbackException)
+            {
+                error = $"Step {index + 1} ({GetLabel(operation)}): The result contains invalid Unicode characters (such as an unpaired surrogate).";
+                return;
+            }
+        }
+
+        (output, outputIsBinary) = results[^1];
+        stepResults.AddRange(results);
+        hasResult = true;
+        var stepCount = $"Completed {steps.Count} {(steps.Count == 1 ? "step" : "steps")}.";
+        status = outputIsBinary
+            ? $"{stepCount} The result is binary data (not readable text), so it is shown as hex. \"Use result as input\" will use the hex text."
+            : $"{stepCount} Select the final result to copy it.";
+    }
+
+    private void AddStep()
+    {
+        steps.Add(new CodecStep());
+        ClearResult();
+    }
+
+    private void RemoveStep(int index)
+    {
+        steps.RemoveAt(index);
+        ClearResult();
+    }
+
+    private void ClearResult()
+    {
+        output = status = "";
+        error = null;
+        hasResult = false;
+        outputIsBinary = false;
+        stepResults.Clear();
+    }
+
+    private void UseResult()
+    {
+        input = output;
+        ClearResult();
+    }
+
+    private void Clear()
+    {
+        input = "";
+        ClearResult();
+    }
+}

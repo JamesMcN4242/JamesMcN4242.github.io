@@ -10,20 +10,22 @@
     <div class="@(Embedded ? "" : "section-container")">
         @if (!Embedded)
         {
+            <a href="utilities" class="back-link">&larr; Back to Utility</a>
             <div class="section-header">
                 <h1>Text Compare</h1>
                 <p>Paste two pieces of text below and compare them to see the differences highlighted</p>
             </div>
+            <UtilityPrivacy />
         }
 
         <div class="compare-inputs">
             <div class="compare-input-col">
-                <label class="compare-label">Original Text</label>
-                <textarea class="compare-textarea" @bind="textA" placeholder="Paste original text here..."></textarea>
+                <label class="compare-label" for="compare-original">Original Text</label>
+                <textarea id="compare-original" class="compare-textarea" @bind="textA" autocomplete="off" spellcheck="false" placeholder="Paste original text here..."></textarea>
             </div>
             <div class="compare-input-col">
-                <label class="compare-label">Modified Text</label>
-                <textarea class="compare-textarea" @bind="textB" placeholder="Paste modified text here..."></textarea>
+                <label class="compare-label" for="compare-modified">Modified Text</label>
+                <textarea id="compare-modified" class="compare-textarea" @bind="textB" autocomplete="off" spellcheck="false" placeholder="Paste modified text here..."></textarea>
             </div>
         </div>
 
