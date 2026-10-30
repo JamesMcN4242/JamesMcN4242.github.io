@@ -2052,7 +2052,113 @@ h1, h2, h3 {
     flex-wrap: wrap;
 }
 
-/* --- Text Compare --- */
+/* --- Utilities --- */
+.utility-privacy {
+    padding: 1rem 1.25rem;
+    margin-bottom: 2rem;
+    background: var(--color-bg-secondary);
+    border: 1px solid var(--color-border);
+    border-left: 3px solid var(--color-accent);
+    border-radius: var(--radius-sm);
+    color: var(--color-text-secondary);
+    line-height: 1.7;
+}
+
+.utility-privacy strong {
+    color: var(--color-accent);
+}
+
+.utility-help {
+    color: var(--color-text-secondary);
+    margin: 1rem 0;
+    line-height: 1.7;
+}
+
+.utility-error {
+    padding: 1rem;
+    border: 1px solid var(--color-accent-secondary);
+    border-radius: var(--radius-sm);
+    color: var(--color-text);
+    margin: 1rem 0;
+}
+
+.codec-chain {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+    min-width: 0;
+}
+
+.codec-chain legend {
+    padding: 0 0.5rem;
+    font-weight: 600;
+}
+
+.codec-step {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+}
+
+.codec-step select {
+    flex: 1;
+    min-width: 0;
+    max-width: 100%;
+    padding: 0.75rem;
+    color: var(--color-text);
+    background: var(--color-bg-secondary);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    font: inherit;
+}
+
+.codec-results {
+    margin: 1.5rem 0;
+}
+
+.codec-results summary {
+    cursor: pointer;
+    color: var(--color-text-secondary);
+}
+
+.codec-step-result {
+    min-width: 0;
+    margin: 1rem 0;
+}
+
+.codec-step-result h2 {
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+}
+
+.codec-step-result pre {
+    padding: 1rem;
+    background: var(--color-bg-secondary);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    max-height: 20rem;
+    overflow: auto;
+}
+
+.utility-tool .compare-actions {
+    flex-wrap: wrap;
+}
+
+.utility-tool .btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.experiment-card h2 {
+    font-size: 1.25rem;
+    margin-bottom: 0.75rem;
+}
+
 .compare-inputs {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -2478,6 +2584,11 @@ h1, h2, h3 {
 
     .compare-inputs {
         grid-template-columns: 1fr;
+    }
+
+    .codec-step select {
+        flex-basis: 100%;
+        order: 1;
     }
 
     .experiment-controls {
